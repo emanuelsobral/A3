@@ -1,8 +1,10 @@
 import java.util.Scanner;
+import java.util.Locale;
 
 public class TesteCalculadora {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { 
+        Locale.setDefault(Locale.US);
         CalculadoraCientifica calculadora = new CalculadoraCientifica();
         Scanner scanner = new Scanner(System.in);
 
