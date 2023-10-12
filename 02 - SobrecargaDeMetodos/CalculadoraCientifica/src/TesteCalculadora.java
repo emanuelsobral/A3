@@ -11,39 +11,36 @@ public class TesteCalculadora {
 
         switch (operacao) {
             case "1":
-                System.out.println("Digite dois números para a potência:");
-                String input1 = scanner.nextLine();
-                String input2 = scanner.nextLine();
+                System.out.println("Digite a base:");
+                byte baseByte = scanner.nextByte();
+                System.out.println("Digite o expoente:");
+                byte expoenteByte = scanner.nextByte();
+                System.out.println("Resultado: " + calculadora.potencia(baseByte, expoenteByte));
 
-                try {
-                    int num1 = Integer.parseInt(input1);
-                    int num2 = Integer.parseInt(input2);
-                    System.out.println("Potência: " + calculadora.potencia(num1, num2));
-                } catch (NumberFormatException e) {
-                    try {
-                        double num1 = Double.parseDouble(input1);
-                        double num2 = Double.parseDouble(input2);
-                        System.out.println("Potência: " + calculadora.potencia(num1, num2));
-                    } catch (NumberFormatException ex) {
-                        System.out.println("Os inputs não são números válidos.");
-                    }
-                }
+                System.out.println("Digite um número inteiro:");
+                int baseInt = scanner.nextInt();
+                System.out.println("Digite um número decimal:");
+                double expoenteDouble = scanner.nextDouble();
+                System.out.println("Resultado: " + calculadora.potencia(baseInt, expoenteDouble));
+
+                System.out.println("Digite um número decimal:");
+                String baseStr = scanner.next();
+                System.out.println("Digite um número decimal:");
+                String expoenteStr = scanner.next();
+                System.out.println("Resultado: " + calculadora.potencia(baseStr, expoenteStr));
                 break;
             case "2":
-                System.out.println("Digite um número para a raiz:");
-                String input = scanner.nextLine();
+                System.out.println("Digite um número inteiro:");
+                int numeroInt = scanner.nextInt();
+                System.out.println("Resultado: " + calculadora.raiz(numeroInt));
 
-                try {
-                    int num = Integer.parseInt(input);
-                    System.out.println("Raiz: " + calculadora.raiz(num));
-                } catch (NumberFormatException e) {
-                    try {
-                        double num = Double.parseDouble(input);
-                        System.out.println("Raiz: " + calculadora.raiz(num));
-                    } catch (NumberFormatException ex) {
-                        System.out.println("O input não é um número válido.");
-                    }
-                }
+                System.out.println("Digite um número decimal:");
+                double numeroDouble = scanner.nextDouble();
+                System.out.println("Resultado: " + calculadora.raiz(numeroDouble));
+
+                System.out.println("Digite um número decimal:");
+                String numeroStr = scanner.next();
+                System.out.println("Resultado: " + calculadora.raiz(numeroStr));
                 break;
             default:
                 System.out.println("Operação inválida.");
@@ -52,3 +49,5 @@ public class TesteCalculadora {
         scanner.close();
     }
 }
+
+

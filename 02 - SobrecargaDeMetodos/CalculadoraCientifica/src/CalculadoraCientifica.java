@@ -27,4 +27,3 @@ public class CalculadoraCientifica {
         return Math.sqrt(numero);
     }
 }
-
