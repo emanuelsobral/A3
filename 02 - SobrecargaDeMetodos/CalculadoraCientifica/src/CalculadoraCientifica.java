@@ -1,11 +1,17 @@
 public class CalculadoraCientifica {
 
-    public double potencia(int base, int expoente) {
-        return Math.pow(base, expoente);
+    public double potencia(byte a, byte b) {
+        return Math.pow(a, b);
     }
 
-    public double potencia(double base, double expoente) {
-        return Math.pow(base, expoente);
+    public double potencia(String s1, String s2) {
+        double num1 = Double.parseDouble(s1);
+        double num2 = Double.parseDouble(s2);
+        return Math.pow(num1, num2);
+    }
+
+    public double potencia(int a, double b) {
+        return Math.pow(a, b);
     }
 
     public double raiz(int numero) {
