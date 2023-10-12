@@ -15,5 +15,10 @@ public class CalculadoraCientifica {
     public double raiz(double numero) {
         return Math.sqrt(numero);
     }
+
+    public double raiz(String numeroStr) {
+        double numero = Double.parseDouble(numeroStr);
+        return Math.sqrt(numero);
+    }
 }
 
