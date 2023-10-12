@@ -41,6 +41,7 @@ public class TesteCalculadora {
                     default:
                         System.out.println("Operação inválida.");
                     }
+                    break;
             case "2":
                 System.out.println("Escolha os tipos de input da raiz \n (1 para inteiro, 2 para double, 3 para inteiroSTR):");
                 String raizEscolha = scanner.nextLine();
@@ -63,6 +64,7 @@ public class TesteCalculadora {
                         break;
                     default:
                         System.out.println("Operação inválida.");
+                    break;
                 }
             default:
                 System.out.println("Operação inválida.");
