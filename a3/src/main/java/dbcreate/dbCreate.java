@@ -13,7 +13,7 @@ public class dbCreate {
         
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("Digite seu nome de usuario do mySQL \n Caso nao responda valor atribuido sera root:");
+        System.out.print("Digite seu nome de usuario do mySQL \n Caso nao responda valor atribuido sera root: ");
         String user = sc.nextLine();
         if (user == "") {
             user = "root";
