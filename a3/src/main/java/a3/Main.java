@@ -6,8 +6,18 @@ public class Main {
     public static void main(String[] args) {
         String BD = "a3";
         String conexao = "jdbc:mysql://localhost:3306/" + BD;
-        String usuarioSQL = "root";
-        String senhaSQL = "RootAdmin123";
+    
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Digite seu nome de usuario do mySQL \n Caso nao responda valor atribuido sera root:");
+        String usuarioSQL = sc.nextLine();
+        if (usuarioSQL == "") {
+            usuarioSQL = "root";
+        }
+        System.out.print("Digite sua senha do mySQL: ");
+        String senhaSQL = sc.nextLine();
+        
+        sc.close();
 
         try {
              Connection connection = DriverManager.getConnection(conexao, usuarioSQL, senhaSQL);
