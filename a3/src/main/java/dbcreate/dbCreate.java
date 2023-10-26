@@ -10,9 +10,18 @@ public class dbCreate {
 
         //conexao
         String url = "jdbc:mysql://localhost:3306/";
-        String user = "root";
-        String password = "usjt";
+        
+        Scanner sc = new Scanner(System.in);
 
+        System.out.print("Digite seu nome de usuario do mySQL \n Caso nao responda valor atribuido sera root:");
+        String user = sc.nextLine();
+        if (user == "") {
+            user = "root";
+        }
+        System.out.print("Digite sua senha do mySQL: ");
+        String password = sc.nextLine();
+        
+        sc.close();
         try {
             Connection con = DriverManager.getConnection(url, user, password);
             System.out.println("Conexão estabelecida com sucesso!");
