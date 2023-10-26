@@ -9,7 +9,7 @@ public class Main {
     
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("Digite seu nome de usuario do mySQL \n Caso nao responda valor atribuido sera root:");
+        System.out.print("Digite seu nome de usuario do mySQL \n Caso nao responda valor atribuido sera root: ");
         String usuarioSQL = sc.nextLine();
         if (usuarioSQL == "") {
             usuarioSQL = "root";
