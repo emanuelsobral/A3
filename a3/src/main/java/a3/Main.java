@@ -95,17 +95,61 @@ public class Main {
                                 break;
                         }
                     } else {
-                        System.out.println("Voce e um usuario comum.");
-                        System.out.printf(
-                                "ID: %d, Nome: %s, Email: %s, Altura: %.2f, Idade: %d, Peso: %.2f, Frequencia: %d, Genero: %s%n",
-                                id, nome, email, altura, idade, peso, frequencia, genero);
-                        System.out.println("Obrigado por usar o nosso programa.");
+                        System.out.println("Login efetuado com sucesso.");
+                        System.out.println("Login efetuado com sucesso.");
+                        System.out.println("Escolha uma opcao: ");
+                        System.out.println("1 - Exibir Seus Dados");
+                        System.out.println("2 - Alterar Seus Dadoas");
+                        int opcaoUser = sc.nextInt();
+
+                        switch (opcaoUser) {
+                            case 1:
+                                exibirUsuario(connection, id);
+                                break;
+                            case 2:
+                                alterarSeuUsuario(connection,id);
+                                break;
+                            default:
+                                System.out.println("Opcao invalida.");
+                                break;
+                        }
                     }
                 } else {
                     System.out.println("Email ou senha incorretos.");
                 }
             }
         }
+    }
+
+    private static void exibirUsuario(Connection connection, int id) throws SQLException {
+        String sql = "SELECT * FROM usuario WHERE userID = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    String nome = resultSet.getString("nome");
+                    String email = resultSet.getString("email");
+                    float altura = resultSet.getFloat("altura");
+                    int idade = resultSet.getInt("idade");
+                    float peso = resultSet.getFloat("peso");
+                    int frequencia = resultSet.getInt("frequencia");
+                    String genero = resultSet.getString("genero");
+                    System.out.println("Nome: " + nome);
+                    System.out.println("Email: " + email);
+                    System.out.println("Altura: " + altura);
+                    System.out.println("Idade: " + idade);
+                    System.out.println("Peso: " + peso);
+                    System.out.println("Frequência semanal de exercícios: " + frequencia);
+                    System.out.println("Gênero: " + genero);
+                } else {
+                    System.out.println("Usuário não encontrado.");
+                }
+            }
+        }
+    }
+
+    private static void alterarSeuUsuario(Connection connection, int id) throws SQLDataException{
+        System.out.println("Voce escolheu alterar informacoes de um usuario.");
     }
 
     private static void fazerCadastro(Connection connection, Scanner sc) throws SQLException {
