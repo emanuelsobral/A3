@@ -16,7 +16,7 @@ public class dbCreate {
 
         System.out.print("Digite seu nome de usuario do mySQL \n Caso nao responda valor atribuido sera root: ");
         String user = sc.nextLine();
-        if (user == "") {
+        if (user.equals("")) {
             user = "root";
         }
         System.out.print("Digite sua senha do mySQL: ");

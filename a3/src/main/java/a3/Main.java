@@ -9,9 +9,9 @@ public class Main {
         String conexao = "jdbc:mysql://localhost:3306/" + BD;
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("Digite seu nome de usuario do mySQL \n Caso nao responda valor atribuido sera root: ");
+        System.out.print("Digite seu nome de usuario do mySQL \nCaso nao responda valor atribuido sera root: ");
         String usuarioSQL = sc.nextLine();
-        if (usuarioSQL == "") {
+        if (usuarioSQL.equals("")) {
             usuarioSQL = "root";
         }
         System.out.print("Digite sua senha do mySQL: ");
@@ -95,8 +95,6 @@ public class Main {
                                 break;
                         }
                     } else {
-                        System.out.println("Login efetuado com sucesso.");
-                        System.out.println("Login efetuado com sucesso.");
                         System.out.println("Escolha uma opcao: ");
                         System.out.println("1 - Exibir Seus Dados");
                         System.out.println("2 - Alterar Seus Dadoas");
@@ -148,8 +146,69 @@ public class Main {
         }
     }
 
-    private static void alterarSeuUsuario(Connection connection, int id) throws SQLDataException{
-        System.out.println("Voce escolheu alterar informacoes de um usuario.");
+    private static void alterarSeuUsuario(Connection connection, int id) throws SQLException{
+        String sql = "SELECT * FROM usuario WHERE userID = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    System.out.println("Usuario encontrado.");
+                    int opcaoAlterar;
+                    do {
+                        Scanner sc = new Scanner(System.in);
+                        System.out.println("Escolha qual informacao voce quer alterar: ");
+                        System.out.println("1 - Nome");
+                        System.out.println("2 - Email");
+                        System.out.println("3 - Senha");
+                        System.out.println("4 - Altura");
+                        System.out.println("5 - Idade");
+                        System.out.println("6 - Peso");
+                        System.out.println("7 - Frequencia");
+                        System.out.println("8 - Genero");
+                        System.out.println("0 - Sair");
+                        opcaoAlterar = sc.nextInt();
+                        sc.nextLine(); // consumir a quebra de linha
+                        switch (opcaoAlterar) {
+                            case 1:
+                                alterarNome(connection, sc, id);
+                                break;
+                            case 2:
+                                alterarEmail(connection, sc, id);
+                                break;
+                            case 3:
+                                alterarSenha(connection, sc, id);
+                                break;
+                            case 4:
+                                alterarAltura(connection, sc, id);
+                                break;
+                            case 5:
+                                alterarIdade(connection, sc, id);
+                                break;
+                            case 6:
+                                alterarPeso(connection, sc, id);
+                                break;
+                            case 7:
+                                alterarFrequencia(connection, sc, id);
+                                break;
+                            case 8:
+                                alterarGenero(connection, sc, id);
+                                break;
+                            case 9:
+                                alterarAdmin(connection, sc, id);
+                                break;
+                            case 0:
+                                System.out.println("Saindo do modo de alteracao.");
+                                break;
+                            default:
+                                System.out.println("Opcao invalida.");
+                                break;
+                        }
+                    } while (opcaoAlterar != 0);
+                } else {
+                    System.out.println("Nao existe usuario com esse ID.");
+                }
+            }
+        }
     }
 
     private static void fazerCadastro(Connection connection, Scanner sc) throws SQLException {
