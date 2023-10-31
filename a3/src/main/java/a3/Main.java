@@ -5,19 +5,10 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        String BD = "a3";
-        String conexao = "jdbc:mysql://localhost:3306/" + BD;
+        connection con = new connection("root", "RootAdmin123");
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("Digite seu nome de usuario do mySQL \nCaso nao responda valor atribuido sera root: ");
-        String usuarioSQL = sc.nextLine();
-        if (usuarioSQL.equals("")) {
-            usuarioSQL = "root";
-        }
-        System.out.print("Digite sua senha do mySQL: ");
-        String senhaSQL = sc.nextLine();
-
-        try (Connection connection = DriverManager.getConnection(conexao, usuarioSQL, senhaSQL)) {
+        try (Connection connection = con.conectar()) {
             System.out.println("Conexao com o banco de dados estabelecida.");
             System.out.println("Escolha uma opcao: ");
             System.out.println("1 - Fazer login");
