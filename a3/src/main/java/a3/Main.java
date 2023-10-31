@@ -5,9 +5,12 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        connection con = new connection("root", "RootAdmin123");
+        //Import Class Connection
+        Conexao con = new Conexao("root", "RootAdmin123");
+
         Scanner sc = new Scanner(System.in);
 
+        //import Metodo para conectar com o banco de dados
         try (Connection connection = con.conectar()) {
             System.out.println("Conexao com o banco de dados estabelecida.");
             System.out.println("Escolha uma opcao: ");
