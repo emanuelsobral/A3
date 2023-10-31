@@ -1,6 +1,7 @@
 package dbcreate;
 
 import java.sql.*;
+import java.util.Scanner;
 
 public class dbCreate {
 
@@ -46,11 +47,12 @@ public class dbCreate {
             // Criar um novo objeto Statement para executar comandos SQL no novo banco de dados
             stmt = con.createStatement();
 
-            sql = "CREATE TABLE " + nomeTabela + " (userID INT NOT NULL AUTO_INCREMENT, nome VARCHAR(60) NOT NULL, email VARCHAR(60) NOT NULL, senha VARCHAR(60) NOT NULL, altura FLOAT NOT NULL, idade INT(11) NOT NULL, peso FLOAT NOT NULL, frequencia INT(2) NOT NULL, genero TINYTEXT NOT NULL, PRIMARY KEY (userID))";
+            sql = "CREATE TABLE " + nomeTabela + " (userID INT NOT NULL AUTO_INCREMENT, nome VARCHAR(60) NOT NULL, email VARCHAR(60) NOT NULL, senha VARCHAR(60) NOT NULL, altura FLOAT NOT NULL, idade INT(11) NOT NULL, peso FLOAT NOT NULL, frequencia INT(2) NOT NULL, genero TINYTEXT NOT NULL, admin TINYINT(1), PRIMARY KEY (userID))";
 
             result = stmt.executeUpdate(sql);
             if (result == 0) {
                 System.out.println("Tabela " + nomeTabela + " criada com sucesso!");
+                stmt.executeUpdate("INSERT INTO usuario (nome, email, senha, altura, idade, peso, frequencia, genero, admin) VALUES ('Admin', 'admin@admin.com', 'admin', 1.72, 43, 72.2, 5, 'M', 1)");
                 stmt.executeUpdate("INSERT INTO usuario (nome, email, senha, altura, idade, peso, frequencia, genero) VALUES ('Maria', 'maria@email.com', 'maria123', 1.62, 28, 54.2, 2, 'F')");
                 stmt.executeUpdate("INSERT INTO usuario (nome, email, senha, altura, idade, peso, frequencia, genero) VALUES ('Roberto', 'roberto@email.com', 'roberto34', 1.72, 43, 72.2, 5, 'M')");
             } else {
