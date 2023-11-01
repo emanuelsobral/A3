@@ -1,6 +1,6 @@
 # FItWeek
 
-O FItWeek é um projeto desenvolvido para o curso A3 na [nome da universidade]. É um aplicativo de rastreamento de fitness que permite aos usuários definir metas de fitness, acompanhar seu progresso e se conectar com outros usuários para obter suporte e motivação.
+O FItWeek é um projeto desenvolvido para o curso A3 na Universidade Sao Judas. É um aplicativo de rastreamento de fitness que permite aos usuários definir metas de fitness, acompanhar seu progresso e se conectar com outros usuários para obter suporte e motivação.
 
 ## Recursos
 
