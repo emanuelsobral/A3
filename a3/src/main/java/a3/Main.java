@@ -5,12 +5,12 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        //Import Class Connection
+        // Import Class Connection
         Conexao con = new Conexao("root", "RootAdmin123");
 
         Scanner sc = new Scanner(System.in);
 
-        //import Metodo para conectar com o banco de dados
+        // import Metodo para conectar com o banco de dados
         try (Connection connection = con.conectar()) {
             System.out.println("Conexao com o banco de dados estabelecida.");
             System.out.println("Escolha uma opcao: ");
@@ -42,78 +42,41 @@ public class Main {
         System.out.print("Digite sua senha: ");
         String senha = sc.nextLine();
 
-        String sql = "SELECT * FROM usuario WHERE email = ? AND senha = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, email);
-            statement.setString(2, senha);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    System.out.println("Login efetuado com sucesso.");
-                    int id = resultSet.getInt("userID");
-                    String nome = resultSet.getString("nome");
-                    float altura = resultSet.getFloat("altura");
-                    int idade = resultSet.getInt("idade");
-                    float peso = resultSet.getFloat("peso");
-                    int frequencia = resultSet.getInt("frequencia");
-                    String genero = resultSet.getString("genero");
-                    boolean admin = resultSet.getBoolean("admin");
+        Login login = new Login(email, senha);
+        Usuario usuario = login.fazerLogin(connection);
 
-                    if (admin) {
-                        System.out.println("Voce e um administrador.");
-                        System.out.println("Escolha uma opcao: ");
-                        System.out.println("1 - Cadastrar um usuario");
-                        System.out.println("2 - Cadastrar outro administrador");
-                        System.out.println("3 - Exibir todos os usuarios no banco de dados");
-                        System.out.println("4 - Deletar um usuario do banco de dados");
-                        System.out.println("5 - Alterar informacoes de um usuario");
-                        int opcaoAdmin = sc.nextInt();
-                        sc.nextLine(); // consumir a quebra de linha
-                        switch (opcaoAdmin) {
-                            case 1:
-                                fazerCadastro(connection, sc);
-                                break;
-                            case 2:
-                                cadastrarAdmin(connection,sc);
-                                break;
-                            case 3:
-                                exibirTodosUsuarios(connection);
-                                break;
-                            case 4:
-                                deletarUsuario(connection, sc);
-                                break;
-                            case 5:
-                                alterarUsuario(connection, sc);
-                                break;
-                            default:
-                                System.out.println("Opcao invalida.");
-                                break;
-                        }
-                    } else {
-                        System.out.println("Escolha uma opcao: ");
-                        System.out.println("1 - Exibir Seus Dados");
-                        System.out.println("2 - Alterar Seus Dadoas");
-                        int opcaoUser = sc.nextInt();
+        if (usuario != null) {
+            System.out.println("Login efetuado com sucesso.");
+            if (usuario instanceof Admin) {
+                System.out.println("Você é um administrador.");
+                Admin admin = (Admin) usuario;
+                // chamar métodos de admin aqui
+            } else {
+                System.out.println("Você é um usuário.");
+                System.out.println("Escolha uma opcao: ");
+                System.out.println("1 - Exibir Seus Dados");
+                System.out.println("2 - Alterar Seus Dadoas");
+                int opcaoUser = sc.nextInt();
 
-                        switch (opcaoUser) {
-                            case 1:
-                                exibirUsuario(connection, id);
-                                break;
-                            case 2:
-                                alterarSeuUsuario(connection,id);
-                                break;
-                            default:
-                                System.out.println("Opcao invalida.");
-                                break;
-                        }
+                switch (opcaoUser) {
+                    case 1:
+                        usuario.exibirDados(connection);
+                        break;
+                    case 2:
+                        usuario.alterarDados(connection);
+                        break;
+                    default:
+                        System.out.println("Opcao invalida.");
+                        break;
                     }
-                } else {
-                    System.out.println("Email ou senha incorretos.");
-                }
             }
+        } else {
+            System.out.println("Email ou senha incorretos.");
         }
     }
 
-    private static void exibirUsuario(Connection connection, int id) throws SQLException {
+
+    /*private static void exibirUsuario(Connection connection, int id) throws SQLException {
         String sql = "SELECT * FROM usuario WHERE userID = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
@@ -138,9 +101,9 @@ public class Main {
                 }
             }
         }
-    }
+    }*/
 
-    private static void alterarSeuUsuario(Connection connection, int id) throws SQLException{
+    /*private static void alterarSeuUsuario(Connection connection, int id) throws SQLException {
         String sql = "SELECT * FROM usuario WHERE userID = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
@@ -203,7 +166,7 @@ public class Main {
                 }
             }
         }
-    }
+    }*/
 
     private static void fazerCadastro(Connection connection, Scanner sc) throws SQLException {
         System.out.print("Digite seu nome: ");
@@ -328,7 +291,7 @@ public class Main {
         }
     }
 
-    private static void alterarUsuario(Connection connection, Scanner sc) throws SQLException {
+    /*private static void alterarUsuario(Connection connection, Scanner sc) throws SQLException {
         System.out.println("Voce escolheu alterar informacoes de um usuario.");
         System.out.print("Digite o ID do usuario que voce quer alterar: ");
         int id = sc.nextInt();
@@ -395,151 +358,5 @@ public class Main {
                 }
             }
         }
-    }
-
-    private static void alterarNome(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite o novo nome: ");
-        String novoNome = sc.nextLine();
-        String sql = "UPDATE usuario SET nome = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, novoNome);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Nome alterado com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar nome.");
-            }
-        }
-    }
-
-    private static void alterarEmail(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite o novo email: ");
-        String novoEmail = sc.nextLine();
-        String sql = "UPDATE usuario SET email = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, novoEmail);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Email alterado com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar email.");
-            }
-        }
-    }
-
-    private static void alterarSenha(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite a nova senha: ");
-        String novaSenha = sc.nextLine();
-        String sql = "UPDATE usuario SET senha = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, novaSenha);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Senha alterada com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar senha.");
-            }
-        }
-    }
-
-    private static void alterarAltura(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite a nova altura em metros: ");
-        float novaAltura = sc.nextFloat();
-        String sql = "UPDATE usuario SET altura = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setFloat(1, novaAltura);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Altura alterada com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar altura.");
-            }
-        }
-    }
-
-    private static void alterarIdade(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite a nova idade em anos: ");
-        int novaIdade = sc.nextInt();
-        String sql = "UPDATE usuario SET idade = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, novaIdade);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Idade alterada com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar idade.");
-            }
-        }
-    }
-
-    private static void alterarPeso(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite o novo peso em quilos: ");
-        float novoPeso = sc.nextFloat();
-        String sql = "UPDATE usuario SET peso = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setFloat(1, novoPeso);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Peso alterado com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar peso.");
-            }
-        }
-    }
-
-    private static void alterarFrequencia(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite a nova frequencia semanal de exercicios (0 a 7): ");
-        int novaFrequencia = sc.nextInt();
-        String sql = "UPDATE usuario SET frequencia = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, novaFrequencia);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Frequencia alterada com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar frequencia.");
-            }
-        }
-    }
-
-    private static void alterarGenero(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite o novo genero (M ou F): ");
-        String novoGenero = sc.nextLine();
-        String sql = "UPDATE usuario SET genero = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, novoGenero);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Genero alterado com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar genero.");
-            }
-        }
-    }
-
-    private static void alterarAdmin(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite se o usuario e um administrador (S/N): ");
-        String resposta = sc.nextLine();
-        boolean novoAdmin = resposta.equalsIgnoreCase("S");
-        String sql = "UPDATE usuario SET admin = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setBoolean(1, novoAdmin);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Admin alterado com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar admin.");
-            }
-        }
-    }
-
+    }*/
 }
