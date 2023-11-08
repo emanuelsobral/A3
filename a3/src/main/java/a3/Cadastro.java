@@ -1,46 +1,50 @@
-ackage a3;
+package a3;
 
-import java.sql.SQLException; 
-import java.sql.Connection; 
-import java.sql.PreparedStatement; 
-import java.util.Scanner; 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Scanner;
 
-public class ClassDelete{
-    Conexao con = new Conexao(usuarioSQL: "Araujo", senhaSQL: "791016");
+public class Cadastro {
 
-    public static void fazerCadastro(Connection connection, Scanner sc, Usuario usuario) throws SQLExcpetion{}
+    Conexao con = new Conexao("root", "RootAdmin123");
 
-        if(usuario = null){
-            System.out.println("Digite o nome do usuário");
+    public static void fazerCadastro(Connection connection, Scanner sc, Usuario usuario) throws SQLException {
+        if (usuario == null) {
+            System.out.print("Digite seu nome: ");
             String nome = sc.nextLine();
-            System.out.println("Digite o email");
+            System.out.print("Digite seu email: ");
             String email = sc.nextLine();
-            System.out.println("Digite a sua senha");
+            System.out.print("Digite sua senha: ");
             String senha = sc.nextLine();
-            System.out.println("Digite sua altura");
+            System.out.print("Digite sua altura em metros: ");
             float altura = sc.nextFloat();
-            System.out.println("Digite sua idade");
+            System.out.print("Digite sua idade em anos: ");
             int idade = sc.nextInt();
-            System.out.println("Digite sua frequencia de exercicios");
+            System.out.print("Digite seu peso em quilos: ");
+            float peso = sc.nextFloat();
+            System.out.print("Digite sua frequencia semanal de exercicios (0 a 7): ");
             int frequencia = sc.nextInt();
-            System.out.println("Digite seu genero(M ou F):" *);
+            sc.nextLine(); // consumir a quebra de linha
+            System.out.print("Digite seu genero (M ou F): ");
             String genero = sc.nextLine();
-    }
-        if(usuario instanceof Admin){
-            cadastroAdmin(connection, nome, email, senha, altura, idade, peso, frequencia, genero);
-        }
-        else {
-        cadastroUsuario(connection, nome, email, senha, altura, idade, peso, frequencia, genero);
-        }
-        else {
-        System.out.println("Voce ja esta cadastrado")
-        }
 
-        private static void cadastroUsurio(Connection connection, String nome, String email, String senha, float altura, int Idade, float frequencia, String genero) throws SQLException {
-string SQL = "INSERT INTO usuario(nome, email, senha, altura, idade, peso, frequencia, genero, admin)VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-try (PreparedStatement statement = connection.preparedStatement(sql)){
-    statement.setString (1, nome);
-     statement.setString(2, email);
+            if (usuario instanceof Admin) {
+                cadastrarAdmin(connection, nome, email, senha, altura, idade, peso, frequencia, genero);
+            } else {
+                cadastrarUsuario(connection, nome, email, senha, altura, idade, peso, frequencia, genero);
+            }
+        } else {
+            System.out.println("Voce ja esta logado.");
+        }
+    }
+
+    private static void cadastrarUsuario(Connection connection, String nome, String email, String senha, float altura,
+            int idade, float peso, int frequencia, String genero) throws SQLException {
+        String sql = "INSERT INTO usuario (nome, email, senha, altura, idade, peso, frequencia, genero, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, nome);
+            statement.setString(2, email);
             statement.setString(3, senha);
             statement.setFloat(4, altura);
             statement.setInt(5, idade);
@@ -48,44 +52,42 @@ try (PreparedStatement statement = connection.preparedStatement(sql)){
             statement.setInt(7, frequencia);
             statement.setString(8, genero);
             statement.setBoolean(9, false);
-int linhasAfetadas = statement.executeUpdate(); 
-  if (linhasAfetadas > 0) {
-    System.out.println("Usuario cadastrado com sucesso!");
-
-} else {
-    System.out.prinln("Não foi possivel cadastrar o usuario.");
-
+            int linhasAfetadas = statement.executeUpdate();
+            if (linhasAfetadas > 0) {
+                System.out.println("Cadastro realizado com sucesso.");
+            } else {
+                System.out.println("Erro ao realizar cadastro.");
+            }
         }
-        private static void cadastroAdmin(Connection connection, String nome, String email, String senha, float altura, int Idade, float frequencia, String genero) throws SQLException {
-string SQL = "INSERT INTO usuario(nome, email, senha, altura, idade, peso, frequencia, genero, admin)VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-try (PreparedStatement statement = connection.preparedStatement(sql)){
-    statement.setString (1, nome);
-     statement.setString(2, email);
+    }
+
+    private static void cadastrarAdmin(Connection connection, String nome, String email, String senha, float altura,
+            int idade, float peso, int frequencia, String genero) throws SQLException {
+        String sql = "INSERT INTO usuario (nome, email, senha, altura, idade, peso, frequencia, genero, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, nome);
+            statement.setString(2, email);
             statement.setString(3, senha);
             statement.setFloat(4, altura);
             statement.setInt(5, idade);
             statement.setFloat(6, peso);
             statement.setInt(7, frequencia);
             statement.setString(8, genero);
-            Scanner scanner = new Scanner (System.in);
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Voce deseja cadastrar um novo administrador? (S/N)");
-  String admin = scanner.nextLine();
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Voce deseja cadastrar um novo administrador? (S/N)");
-            String admin = scanner.nextLine();
-            if (admin.equals("S")) {
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Voce deseja cadastrar um administrador? (S ou N): ");
+            String admin = sc.nextLine();
+            if (admin.equals("S") || admin.equals("s")) {
                 statement.setBoolean(9, true);
-            } else {
+            } else if (admin.equals("N") || admin.equals("n") || admin.equals(" ") || admin.equals("")) {
                 statement.setBoolean(9, false);
             }
-int linhasAfetadas = statement.executeUpdate(); 
-if (linhasAfetadas > 0) {
-    System.out.println("Usuario cadastrado com sucesso!");
-
-} else {
-    System.out.prinln("Não foi possivel cadastrar o usuario.");
-
+            int linhasAfetadas = statement.executeUpdate();
+            sc.close();
+            if (linhasAfetadas > 0) {
+                System.out.println("Cadastro realizado com sucesso.");
+            } else {
+                System.out.println("Erro ao realizar cadastro.");
+            }
         }
     }
-    
+}
