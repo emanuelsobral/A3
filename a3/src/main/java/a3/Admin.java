@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
-package com.mycompany.a33;
+package a3;
 
 import java.sql.*;
 import java.util.Scanner;
-/**
- *
- * @author 82317363
- */
 
-public class Admin extends usuario {
+public class Admin extends Usuario {
     public Admin(int id, String nome, float altura, int idade, float peso, int frequencia, String genero) {
         super(id, nome, altura, idade, peso, frequencia, genero, true);
     }
