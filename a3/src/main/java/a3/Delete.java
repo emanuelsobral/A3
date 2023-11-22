@@ -31,7 +31,7 @@ public class Delete {
                     } else {
                         System.out.println("Nao existe usuario com esse ID.");
                     }
-                } // Add this line to fix the syntax error
+                }
             } else {
                 System.out.println("Operação cancelada.");
             }
