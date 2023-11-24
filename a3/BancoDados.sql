@@ -34,6 +34,20 @@ INSERT INTO exercicios (exercicio, intensidade, fatorIntensidade, MET) VALUES
 ('Yoga', 'Fácil', 1, 2.5),
 ('Musculação', 'Moderado', 3, 5.0),
 ('Boxe', 'Difícil',5,12.0);
+('Escalada', 'Difícil', 5 , 11.0);
+('HIIT', 'Difícil', 5 , 15.0);
+('Crossfit', 'Difícil', 5 , 12.0);
+('Pilates', 'Fácil', 1 , 3.0);
+('Tai Chi', 'Iniciante', 2 , 3.0);
+('Dança Zumba', 'Moderado', 3 , 6.0);
+('Basquete', 'Moderado', 3 , 6.5);
+('Futebol', 'Avançado', 4 , 7.0);
+('Saltar Corda', 'Avançado', 4, 10.0);
+('Corida em ladeira'), 'Difícil', 5 , 15.0);
+('Remo', 'Difícil', 5 , 12.0);
+('Ciclismo em terreno acidentado', 'Difícil' , 5 , 14.0);
+('Treinamento de intervalo de alta intensidade (HIIT) com pesos', 'Difícil', 5 , 16.0);
+
 /*
 Intensidades: 1 - Facil, 
               2 - Iniciante, 
