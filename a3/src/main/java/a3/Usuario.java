@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class Usuario {
-    int id;
+    private int id;
     private String nome;
     private float altura;
     private int idade;

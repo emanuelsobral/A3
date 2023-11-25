@@ -52,8 +52,7 @@ public class Admin extends Usuario {
       
           
 
-    public void cadastrarAdmin(Connection connection, Scanner sc) throws SQLException {
-        // implementar a lógica para cadastrar um novo administrador
+    public static void cadastrarAdmin(Connection connection, Scanner sc) throws SQLException {
         System.out.print("Digite seu nome: ");
         String nome = sc.nextLine();
         System.out.print("Digite seu email: ");
