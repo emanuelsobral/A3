@@ -23,7 +23,7 @@ public class Main {
                     fazerLogin(connection, sc);
                     break;
                 case 2:
-                    fazerCadastro(connection, sc, null);
+                    Cadastro.fazerCadastro(connection, sc);
                     break;
                 default:
                     System.out.println("Opcao invalida.");
@@ -52,17 +52,25 @@ public class Main {
                 System.out.println("Escolha uma opcao: ");
                 System.out.println("1 - Exibir Todos os Usuarios");
                 System.out.println("2 - Deletar Usuario");
-                System.out.println("3 - Cadastratrar Usuario");
+                System.out.println("3 - Alterar Usuario");
+                System.out.println("4 - Cadastratrar Usuario");
+                System.out.println("5 - cadastrar Admin");
                 int opcaoAdmin = sc.nextInt();
 
                 switch (opcaoAdmin) {
                     case 1:
-                        exibirTodosUsuarios(connection);
+                        Admin.exibirTodosUsuarios(connection);
                         break;
                     case 2:
-                        deletarUsuario(connection, sc);
+                        Admin.deletarUsuario(connection, sc);
                         break;
                     case 3:
+                        Admin.alterarUsuario(connection, sc);
+                        break;
+                    case 4:
+                        Admin.cadastrarUsuario(connection, sc);
+                        break;
+                    case 5:
                         Admin.cadastrarAdmin(connection, sc);
                         break;
                     default:
@@ -93,52 +101,4 @@ public class Main {
         }
     }
 
-    private static void fazerCadastro(Connection connection, Scanner sc, Usuario usuario) throws SQLException {
-        Cadastro.fazerCadastro(connection, sc, usuario);
-    }
-
-    private static void cadastrarAdmin(Connection connection, Scanner sc, Usuario usuario) throws SQLException {
-        Cadastro.fazerCadastro(connection, sc, usuario);
-    }
-
-    private static void exibirTodosUsuarios(Connection connection) throws SQLException {
-        System.out.println("Voce escolheu exibir todos os usuarios no banco de dados.");
-        String sql = "SELECT * FROM usuario";
-        try (Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(sql)) {
-            printResultSet(resultSet);
-        }
-    }
-
-    private static void printResultSet(ResultSet resultSet) throws SQLException {
-        ResultSetMetaData metaData = resultSet.getMetaData();
-        int columnCount = metaData.getColumnCount();
-        for (int i = 1; i <= columnCount; i++) {
-            System.out.printf("%-15s", metaData.getColumnName(i));
-        }
-        System.out.println();
-        while (resultSet.next()) {
-            for (int i = 1; i <= columnCount; i++) {
-                System.out.printf("%-15s", resultSet.getString(i));
-            }
-            System.out.println();
-        }
-    }
-
-    private static void deletarUsuario(Connection connection, Scanner sc) throws SQLException {
-        System.out.println("Voce escolheu deletar um usuario do banco de dados.");
-        System.out.print("Digite o ID do usuario que voce quer deletar: ");
-        int id = sc.nextInt();
-        sc.nextLine(); // consumir a quebra de linha
-        String sql = "DELETE FROM usuario WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Usuario deletado com sucesso.");
-            } else {
-                System.out.println("Nao existe usuario com esse ID.");
-            }
-        }
-    }
 }

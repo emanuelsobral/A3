@@ -8,7 +8,7 @@ public class Admin extends Usuario {
         super(id, nome, altura, idade, peso, frequencia, genero, true);
     }
 
-    public void cadastrarUsuario(Connection connection, Scanner sc) throws SQLException {
+    public static void cadastrarUsuario(Connection connection, Scanner sc) throws SQLException {
         // implementar a lógica para cadastrar um novo usuário
         System.out.print("Digite seu nome: ");
         String nome = sc.nextLine();
@@ -96,7 +96,7 @@ public class Admin extends Usuario {
          
     
 
-    public void exibirTodosUsuarios(Connection connection)throws SQLException {
+    public static void exibirTodosUsuarios(Connection connection)throws SQLException {
         System.out.println("Voce escolheu exibir todos os usuarios no banco de dados.");
         String sql = "SELECT * FROM usuario";
         try (Statement statement = connection.createStatement();
@@ -119,7 +119,7 @@ public class Admin extends Usuario {
         }
     }
 
-    public void deletarUsuario(Connection connection, Scanner sc) throws SQLException {
+    public static void deletarUsuario(Connection connection, Scanner sc) throws SQLException {
         // implementar a lógica para deletar um usuário
         System.out.println("Voce escolheu deletar um usuario do banco de dados.");
         System.out.print("Digite o ID do usuario que voce quer deletar: ");
@@ -137,7 +137,7 @@ public class Admin extends Usuario {
         }
     }
 
-    public void alterarUsuario(Connection connection, Scanner sc) throws SQLException {
+    public static void alterarUsuario(Connection connection, Scanner sc) throws SQLException {
         System.out.println("Voce escolheu alterar informacoes de um usuario.");
         System.out.print("Digite o ID do usuario que voce quer alterar: ");
         int id = sc.nextInt();
