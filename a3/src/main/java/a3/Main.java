@@ -5,17 +5,19 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        // Import Class Connection
         Conexao con = new Conexao("root", "RootAdmin123");
 
         Scanner sc = new Scanner(System.in);
 
+        // import Metodo para conectar com o banco de dados
         try (Connection connection = con.conectar()) {
             System.out.println("Conexao com o banco de dados estabelecida.");
             System.out.println("Escolha uma opcao: ");
             System.out.println("1 - Fazer login");
             System.out.println("2 - Fazer cadastro");
             int opcao = sc.nextInt();
-            sc.nextLine();
+            sc.nextLine(); // consumir a quebra de linha
             switch (opcao) {
                 case 1:
                     fazerLogin(connection, sc);
