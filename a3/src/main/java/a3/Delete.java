@@ -38,16 +38,22 @@ public class Delete {
         }
     }
 
-    private static void deletarUsuario(Connection connection, Usuario usuario) throws SQLException {
-        String sql = "DELETE FROM usuario WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, usuario.id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Usuário deletado com sucesso.");
+    private static void deletarUsuario(Connection connection, Usuario usuario, Scanner sc) throws SQLException {
+        System.out.print("Tem certeza que deseja deletar sua conta? (S ou N): ");
+        String resposta = sc.nextLine();
+        if (resposta.equals("S") || resposta.equals("s")) {
+                String sql = "DELETE FROM usuario WHERE id = ?";
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setInt(1, usuario.id);
+                    int linhasAfetadas = statement.executeUpdate();
+                    if (linhasAfetadas > 0) {
+                        System.out.println("Usuário deletado com sucesso.");
+                    } else {
+                        System.out.println("Erro ao deletar usuário.");
+                    }
+                }
             } else {
-                System.out.println("Erro ao deletar usuário.");
+                System.out.println("Operação cancelada.");
             }
-        }
     }
 }
