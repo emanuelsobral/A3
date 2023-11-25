@@ -19,7 +19,7 @@ CREATE TABLE usuario (
   altura FLOAT NOT NULL,
   idade INT(11) NOT NULL,
   peso FLOAT NOT NULL,
-  frequencia INT(2) NOT NULL,
+  frequencia INT(2),
   genero TINYTEXT NOT NULL,
   admin TINYINT(1),
   exercicioID INT,
