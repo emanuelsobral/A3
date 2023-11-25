@@ -1,4 +1,9 @@
-package a3;
+package interfaceGrafica;
+
+import a3.Admin;
+import a3.Conexao;
+import a3.Login;
+import a3.Usuario;
 
 public class MainGUI extends JFrame {
     private JTextField emailTextField;

@@ -78,23 +78,27 @@ public class Main {
                         break;
                 }
             } else {
-                System.out.println("Você é um usuário.");
+                System.out.println("Você é um usuario.");
                 System.out.println("Escolha uma opcao: ");
-                System.out.println("1 - Exibir Seus Dados");
-                System.out.println("2 - Alterar Seus Dadoas");
-                int opcaoUser = sc.nextInt();
+                System.out.println("1 - Exibir Dados");
+                System.out.println("2 - Alterar Dados");
+                System.out.println("3 - Deletar Conta");
+                int opcaoUsuario = sc.nextInt();
 
-                switch (opcaoUser) {
+                switch (opcaoUsuario) {
                     case 1:
                         usuario.exibirDados(connection);
                         break;
                     case 2:
                         usuario.alterarDados(connection);
                         break;
+                    case 3:
+                        usuario.deletarConta(connection, sc);
+                        break;
                     default:
                         System.out.println("Opcao invalida.");
                         break;
-                    }
+                }
             }
         } else {
             System.out.println("Email ou senha incorretos.");

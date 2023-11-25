@@ -54,6 +54,25 @@ public class Usuario {
         }
     }
 
+    public void deletarConta(Connection connection, Scanner sc) throws SQLException {
+        System.out.println("Tem certeza que deseja deletar a conta? (S/N)");
+        String confirmacao = sc.nextLine();
+        if (confirmacao.equalsIgnoreCase("S")) {
+            String sql = "DELETE FROM usuario WHERE userID = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, this.id);
+                int linhasAfetadas = statement.executeUpdate();
+                if (linhasAfetadas > 0) {
+                    System.out.println("Conta deletada com sucesso.");
+                } else {
+                    System.out.println("Erro ao deletar conta.");
+                }
+            }
+        } else {
+            System.out.println("Operação cancelada.");
+        }
+    }
+
     public void alterarDados(Connection connection) throws SQLException {
         String sql = "SELECT * FROM usuario WHERE userID = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
