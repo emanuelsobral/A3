@@ -1,108 +1,123 @@
 package a3;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.*;
-import java.util.Scanner;
+import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        // Import Class Connection
-        Conexao con = new Conexao("root", "RootAdmin123");
-
-        Scanner sc = new Scanner(System.in);
-
-        // import Metodo para conectar com o banco de dados
-        try (Connection connection = con.conectar()) {
-            System.out.println("Conexao com o banco de dados estabelecida.");
-            System.out.println("Escolha uma opcao: ");
-            System.out.println("1 - Fazer login");
-            System.out.println("2 - Fazer cadastro");
-            int opcao = sc.nextInt();
-            sc.nextLine(); // consumir a quebra de linha
-            switch (opcao) {
-                case 1:
-                    fazerLogin(connection, sc);
-                    break;
-                case 2:
-                    Cadastro.fazerCadastro(connection, sc);
-                    break;
-                default:
-                    System.out.println("Opcao invalida.");
-                    break;
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                createAndShowGUI();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            sc.close();
-        }
+        });
     }
 
-    private static void fazerLogin(Connection connection, Scanner sc) throws SQLException {
-        System.out.print("Digite seu email: ");
-        String email = sc.nextLine();
-        System.out.print("Digite sua senha: ");
-        String senha = sc.nextLine();
+    private static void createAndShowGUI() {
+        JFrame frame = new JFrame("Login");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300, 200);
+        frame.setLayout(new GridLayout(4, 2));
 
-        Login login = new Login(email, senha);
-        Usuario usuario = login.fazerLogin(connection);
+        JLabel emailLabel = new JLabel("Email:");
+        JTextField emailTextField = new JTextField();
 
-        if (usuario != null) {
-            System.out.println("Login efetuado com sucesso.");
-            if (usuario instanceof Admin) {
-                System.out.println("Você é um administrador.");
-                System.out.println("Escolha uma opcao: ");
-                System.out.println("1 - Exibir Todos os Usuarios");
-                System.out.println("2 - Deletar Usuario");
-                System.out.println("3 - Alterar Usuario");
-                System.out.println("4 - Cadastratrar Usuario");
-                System.out.println("5 - cadastrar Admin");
-                int opcaoAdmin = sc.nextInt();
+        JLabel senhaLabel = new JLabel("Senha:");
+        JPasswordField senhaPasswordField = new JPasswordField();
 
-                switch (opcaoAdmin) {
-                    case 1:
-                        Admin.exibirTodosUsuarios(connection);
-                        break;
-                    case 2:
-                        Admin.deletarUsuario(connection, sc);
-                        break;
-                    case 3:
-                        Admin.alterarUsuario(connection, sc);
-                        break;
-                    case 4:
-                        Admin.cadastrarUsuario(connection, sc);
-                        break;
-                    case 5:
-                        Admin.cadastrarAdmin(connection, sc);
-                        break;
-                    default:
-                        System.out.println("Opcao invalida.");
-                        break;
-                }
-            } else {
-                System.out.println("Você é um usuario.");
-                System.out.println("Escolha uma opcao: ");
-                System.out.println("1 - Exibir Dados");
-                System.out.println("2 - Alterar Dados");
-                System.out.println("3 - Deletar Conta");
-                int opcaoUsuario = sc.nextInt();
+        JButton loginButton = new JButton("Login");
+        loginButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String email = emailTextField.getText();
+                String senha = new String(senhaPasswordField.getPassword());
 
-                switch (opcaoUsuario) {
-                    case 1:
-                        usuario.exibirDados(connection);
-                        break;
-                    case 2:
-                        usuario.alterarDados(connection);
-                        break;
-                    case 3:
-                        usuario.deletarConta(connection, sc);
-                        break;
-                    default:
-                        System.out.println("Opcao invalida.");
-                        break;
+                // Import Class Connection
+                Conexao con = new Conexao("root", "RootAdmin123");
+
+                // import Metodo para conectar com o banco de dados
+                try (Connection connection = con.conectar()) {
+                    Login login = new Login(email, senha);
+                    Usuario usuario = login.fazerLogin(connection);
+
+                    if (usuario != null) {
+                        JOptionPane.showMessageDialog(frame, "Login efetuado com sucesso.");
+
+                        if (usuario instanceof Admin) {
+                            String[] opcoesAdmin = { "Exibir Todos os Usuarios", "Deletar Usuario", "Alterar Usuario",
+                                    "Cadastrar Usuario", "Cadastrar Admin" };
+                            int opcaoAdmin = JOptionPane.showOptionDialog(frame, "Você é um administrador.",
+                                    "Opções do Administrador", JOptionPane.DEFAULT_OPTION,
+                                    JOptionPane.PLAIN_MESSAGE, null, opcoesAdmin, opcoesAdmin[0]);
+
+                            switch (opcaoAdmin) {
+                                case 0:
+                                    Admin.exibirTodosUsuarios(connection);
+                                    break;
+                                case 1:
+                                    Admin.deletarUsuario(connection, null);
+                                    break;
+                                case 2:
+                                    Admin.alterarUsuario(connection, null);
+                                    break;
+                                case 3:
+                                    Admin.cadastrarUsuario(connection, null);
+                                    break;
+                                case 4:
+                                    Admin.cadastrarAdmin(connection, null);
+                                    break;
+                                default:
+                                    JOptionPane.showMessageDialog(frame, "Opcao invalida.");
+                                    break;
+                            }
+                        } else {
+                            String[] opcoesUsuario = { "Exibir Dados", "Alterar Dados", "Deletar Conta" };
+                            int opcaoUsuario = JOptionPane.showOptionDialog(frame, "Você é um usuario.",
+                                    "Opções do Usuario", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+                                    opcoesUsuario, opcoesUsuario[0]);
+
+                            switch (opcaoUsuario) {
+                                case 0:
+                                    usuario.exibirDados(connection);
+                                    break;
+                                case 1:
+                                    usuario.alterarDados(connection);
+                                    break;
+                                case 2:
+                                    usuario.deletarConta(connection, null);
+                                    break;
+                                default:
+                                    JOptionPane.showMessageDialog(frame, "Opcao invalida.");
+                                    break;
+                            }
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Email ou senha incorretos.");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
                 }
             }
-        } else {
-            System.out.println("Email ou senha incorretos.");
-        }
-    }
+        });
 
+        JButton cadastrarButton = new JButton("Fazer Cadastro");
+        cadastrarButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Cadastro cadastro = new Cadastro();
+                cadastro.setVisible(true);
+            }
+        });
+
+        frame.add(emailLabel);
+        frame.add(emailTextField);
+        frame.add(senhaLabel);
+        frame.add(senhaPasswordField);
+        frame.add(new JLabel());
+        frame.add(loginButton);
+        frame.add(new JLabel());
+        frame.add(cadastrarButton);
+
+        frame.setVisible(true);
+    }
 }
