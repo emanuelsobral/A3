@@ -28,11 +28,12 @@ public class Login {
                     int frequencia = resultSet.getInt("frequencia");
                     String genero = resultSet.getString("genero");
                     boolean admin = resultSet.getBoolean("admin");
+                    int exercicioID = resultSet.getInt("exercicioID");
 
                     if (admin) {
                         return new Admin(id, nome, altura, idade, peso, frequencia, genero);
                     } else {
-                        return new Usuario(id, nome, altura, idade, peso, frequencia, genero, false);
+                        return new Usuario(id, nome, altura, idade, peso, frequencia, genero, false, exercicioID);
                     }
                 } else {
                     return null;

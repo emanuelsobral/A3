@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Admin extends Usuario {
     public Admin(int id, String nome, float altura, int idade, float peso, int frequencia, String genero) {
-        super(id, nome, altura, idade, peso, frequencia, genero, true);
+        super(id, nome, altura, idade, peso, frequencia, genero, true, frequencia);
     }
 
     public static void cadastrarUsuario(Connection connection, Scanner sc) throws SQLException {
@@ -47,10 +47,8 @@ public class Admin extends Usuario {
                 System.out.println("Erro ao realizar cadastro.");
             }
         }
-      
+
     }
-      
-          
 
     public static void cadastrarAdmin(Connection connection, Scanner sc) throws SQLException {
         System.out.print("Digite seu nome: ");
@@ -93,17 +91,16 @@ public class Admin extends Usuario {
             }
         }
     }
-         
-    
 
-    public static void exibirTodosUsuarios(Connection connection)throws SQLException {
+    public static void exibirTodosUsuarios(Connection connection) throws SQLException {
         System.out.println("Voce escolheu exibir todos os usuarios no banco de dados.");
         String sql = "SELECT * FROM usuario";
         try (Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(sql)) {
             printResultSet(resultSet);
+        }
     }
-    }
+
     private static void printResultSet(ResultSet resultSet) throws SQLException {
         ResultSetMetaData metaData = resultSet.getMetaData();
         int columnCount = metaData.getColumnCount();
@@ -191,6 +188,9 @@ public class Admin extends Usuario {
                             case 9:
                                 alterarAdmin(connection, sc, id);
                                 break;
+                            case 10:
+                                AlterarExercicioDoUsuario(connection, sc);
+                                break;
                             case 0:
                                 System.out.println("Saindo do modo de alteracao.");
                                 break;
@@ -205,7 +205,27 @@ public class Admin extends Usuario {
             }
         }
     }
-     private static void alterarNome(Connection connection, Scanner sc, int id) throws SQLException {
+
+    static void AlterarExercicioDoUsuario(Connection connection, Scanner sc) throws SQLException {
+        System.out.println("Digite o id do usuario que voce quer alterar: ");
+        int id = sc.nextInt();
+        System.out.print("Digite o id do exercicio que voce quer adicionar ao usuario: ");
+        int exercicioID = sc.nextInt();
+        sc.nextLine(); // consumir a quebra de linha
+        String sql = "UPDATE usuario SET exercicioID = ? WHERE userID = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, exercicioID);
+            statement.setInt(2, id);
+            int linhasAfetadas = statement.executeUpdate();
+            if (linhasAfetadas > 0){
+                System.out.println("Exercicio adicionado com sucesso.");
+            } else {
+                System.out.println("Erro ao adicionar exercicio.");
+            }
+        }
+    }
+
+    private static void alterarNome(Connection connection, Scanner sc, int id) throws SQLException {
         System.out.print("Digite o novo nome: ");
         String novoNome = sc.nextLine();
         String sql = "UPDATE usuario SET nome = ? WHERE userID = ?";
@@ -316,6 +336,7 @@ public class Admin extends Usuario {
             }
         }
     }
+
     private static void alterarGenero(Connection connection, Scanner sc, int id) throws SQLException {
         System.out.print("Digite o novo genero (M ou F): ");
         String novoGenero = sc.nextLine();
@@ -328,11 +349,12 @@ public class Admin extends Usuario {
                 System.out.println("Genero alterado com sucesso.");
             } else {
                 System.out.println("Erro ao alterar genero.");
-}
+            }
         }
     }
+
     private static void alterarAdmin(Connection connection, Scanner sc, int id) throws SQLException {
-     System.out.println("Voce escolheu alterar informacoes de um administrador.");
+        System.out.println("Voce escolheu alterar informacoes de um administrador.");
         System.out.print("Digite o ID do administrador que voce quer alterar: ");
         id = sc.nextInt();
         sc.nextLine(); // consumir a quebra de linha
@@ -343,27 +365,176 @@ public class Admin extends Usuario {
                 if (resultSet.next()) {
                     System.out.println("Administrador encontrado.");
                     int opcaoAlterar;
-                        System.out.println("Escolha qual informacao voce quer alterar: ");
-                        System.out.println("1 - Nome");
-                        System.out.println("2 - Email");
-                        System.out.println("3 - Senha");
-                        opcaoAlterar = sc.nextInt();
-                        sc.nextLine(); // consumir a quebra de linha
-                        switch (opcaoAlterar) {
-                            case 1:
-                                alterarNome(connection, sc, id);
-                                break;
-                            case 2:
-                                alterarEmail(connection, sc, id);
-                                break;
-                            case 3:
-                                alterarSenha(connection, sc, id);
-                                break;
-                                
-                         } while (opcaoAlterar != 0);
+                    System.out.println("Escolha qual informacao voce quer alterar: ");
+                    System.out.println("1 - Nome");
+                    System.out.println("2 - Email");
+                    System.out.println("3 - Senha");
+                    opcaoAlterar = sc.nextInt();
+                    sc.nextLine(); // consumir a quebra de linha
+                    switch (opcaoAlterar) {
+                        case 1:
+                            alterarNome(connection, sc, id);
+                            break;
+                        case 2:
+                            alterarEmail(connection, sc, id);
+                            break;
+                        case 3:
+                            alterarSenha(connection, sc, id);
+                            break;
+
+                    }
+                    while (opcaoAlterar != 0)
+                        ;
                 } else {
                     System.out.println("Nao existe usuario com esse ID.");
-                    }
-                    }
-            }}}
-        
+                }
+            }
+        }
+    }
+
+    static void alterarExercicio(Connection connection, Scanner sc) throws SQLException {
+        System.out.println("Voce escolheu alterar informacoes de um exercicio.");
+        int opcaoAlterar;
+        System.out.println("Escolha qual informacao voce quer alterar: ");
+        System.out.println("-------------Cadastro--------------");
+        System.out.println("0 - Cadastrar Exercicio");
+        System.out.println("------------Alteraçoes-------------");
+        System.out.println("1 - Nome");
+        System.out.println("2 - Intensidade");
+        System.out.println("3 - Fator de Intensidade");
+        System.out.println("4 - MET");
+        opcaoAlterar = sc.nextInt();
+        sc.nextLine(); // consumir a quebra de linha
+        switch (opcaoAlterar) {
+            case 0:
+                CadastraExercicio(connection, sc);
+                break;
+            case 1:
+                alterarNomeExercicio(connection, sc, id);
+                break;
+            case 2:
+                alterarIntensidade(connection, sc, id);
+                break;
+            case 3:
+                alterarFatorIntensidade(connection, sc, id);
+                break;
+            case 4:
+                alterarMET(connection, sc, id);
+                break;
+            default:
+                System.out.println("Opcao invalida.");
+                break;
+            }
+        }
+
+    private static void CadastraExercicio(Connection connection, Scanner sc) throws SQLException {
+        System.out.print("Digite o nome do exercicio: ");
+        String exercicio = sc.nextLine();
+        System.out.print("Digite a intensidade do exercicio: ");
+        String intensidade = sc.nextLine();
+        System.out.print("Digite o fator de intensidade do exercicio: ");
+        int fatorIntensidade = sc.nextInt();
+        System.out.print("Digite o MET do exercicio: ");
+        float MET = sc.nextFloat();
+        String sql = "INSERT INTO exercicios (exercicio, intensidade, fatorIntensidade, MET) VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, exercicio);
+            statement.setString(2, intensidade);
+            statement.setInt(3, fatorIntensidade);
+            statement.setFloat(4, MET);
+            int linhasAfetadas = statement.executeUpdate();
+            if (linhasAfetadas > 0) {
+                System.out.println("Cadastro realizado com sucesso.");
+            } else {
+                System.out.println("Erro ao realizar cadastro.");
+            }
+        }
+    }
+
+    private static void alterarMET(Connection connection, Scanner sc, int id) throws SQLException {
+        System.out.print("Digite o id do exercicio que voce quer alterar: ");
+        id = sc.nextInt();
+        System.out.print("Digite o novo MET: ");
+        float novoMET = sc.nextFloat();
+        String sql = "UPDATE exercicios SET MET = ? WHERE exercicioID = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setFloat(1, novoMET);
+            statement.setInt(2, id);
+            int linhasAfetadas = statement.executeUpdate();
+            if (linhasAfetadas > 0){
+                System.out.println("MET alterado com sucesso.");
+            } else {
+                System.out.println("Erro ao alterar MET.");
+            }
+        }
+    }
+
+    private static void alterarFatorIntensidade(Connection connection, Scanner sc, int id) throws SQLException {
+        System.out.print("Digite o id do exercicio que voce quer alterar: ");
+        id = sc.nextInt();
+        System.out.print("Digite o novo fator de intensidade: ");
+        int novoFatorIntensidade = sc.nextInt();
+        String sql = "UPDATE exercicios SET fatorIntensidade = ? WHERE exercicioID = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, novoFatorIntensidade);
+            statement.setInt(2, id);
+            int linhasAfetadas = statement.executeUpdate();
+            if (linhasAfetadas > 0){
+                System.out.println("Fator de intensidade alterado com sucesso.");
+            } else {
+                System.out.println("Erro ao alterar fator de intensidade.");
+            }
+        }
+    }
+
+    private static void alterarIntensidade(Connection connection, Scanner sc, int id) throws SQLException {
+        System.out.print("Digite o id do exercicio que voce quer alterar: ");
+        id = sc.nextInt();
+        System.out.print("Digite a nova intensidade: ");
+        String novaIntensidade = sc.nextLine();
+        String sql = "UPDATE exercicios SET intensidade = ? WHERE exercicioID = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, novaIntensidade);
+            statement.setInt(2, id);
+            int linhasAfetadas = statement.executeUpdate();
+            if (linhasAfetadas > 0){
+                System.out.println("Intensidade alterada com sucesso.");
+            } else {
+                System.out.println("Erro ao alterar intensidade.");
+            }
+        }
+    }
+
+    private static void alterarNomeExercicio(Connection connection, Scanner sc, int id) throws SQLException {
+        System.out.print("Digite o id do exercicio que voce quer alterar: ");
+        id = sc.nextInt();
+        System.out.print("Digite o novo nome do exercicio: ");
+        String novoNomeExercicio = sc.nextLine();
+        String sql = "UPDATE exercicios SET exercicio = ? WHERE exercicioID = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, novoNomeExercicio);
+            statement.setInt(2, id);
+            int linhasAfetadas = statement.executeUpdate();
+            if (linhasAfetadas > 0){
+                System.out.println("Nome do exercicio alterado com sucesso.");
+            } else {
+                System.out.println("Erro ao alterar nome do exercicio.");
+            }
+        }
+    }
+    static void mostratTodosExercicios(Connection connection) throws SQLException {
+        System.out.println("Voce escolheu exibir todos os exercicios no banco de dados.");
+        String sql = "SELECT * FROM exercicios";
+        try (Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(sql)) {
+            printResultSet(resultSet);
+        }
+    }
+
+    
+}

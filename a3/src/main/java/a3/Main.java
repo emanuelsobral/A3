@@ -1,129 +1,145 @@
 package a3;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.*;
-import javax.swing.*;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
+        // Import Class Connection
+        Conexao con = new Conexao("root", "RootAdmin123");
+
+        Scanner sc = new Scanner(System.in);
+
+        // import Metodo para conectar com o banco de dados
+        try (Connection connection = con.conectar()) {
+            System.out.println("Conexao com o banco de dados estabelecida.");
+            System.out.println("Escolha uma opcao: ");
+            System.out.println("1 - Fazer login");
+            System.out.println("2 - Fazer cadastro");
+            int opcao = sc.nextInt();
+            sc.nextLine(); // consumir a quebra de linha
+            switch (opcao) {
+                case 1:
+                    fazerLogin(connection, sc);
+                    break;
+                case 2:
+                    Cadastro.fazerCadastro(connection, sc);
+                    break;
+                default:
+                    System.out.println("Opcao invalida.");
+                    break;
             }
-        });
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            sc.close();
+        }
     }
 
-    private static void createAndShowGUI() {
-        JFrame frame = new JFrame("Login");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 200);
-        frame.setLayout(new GridLayout(4, 2));
+    private static void fazerLogin(Connection connection, Scanner sc) throws SQLException {
+        System.out.print("Digite seu email: ");
+        String email = sc.nextLine();
+        System.out.print("Digite sua senha: ");
+        String senha = sc.nextLine();
 
-        JLabel emailLabel = new JLabel("Email:");
-        JTextField emailTextField = new JTextField();
+        Login login = new Login(email, senha);
+        Usuario usuario = login.fazerLogin(connection);
 
-        JLabel senhaLabel = new JLabel("Senha:");
-        JPasswordField senhaPasswordField = new JPasswordField();
+        if (usuario != null) {
+            System.out.println("Login efetuado com sucesso.");
+            if (usuario instanceof Admin) {
+                System.out.println("Você é um administrador.");
+                System.out.println("Escolha uma opcao: ");
+                System.out.println("1 - Exibir Todos os Usuarios");
+                System.out.println("2 - Deletar Usuario");
+                System.out.println("3 - Alterar Usuario");
+                System.out.println("4 - Cadastratrar Usuario");
+                System.out.println("5 - cadastrar Admin");
+                System.out.println("6 - Alterar Exercicio ou Cadastrar Exercicio");
+                System.out.println("7 - Alterar Exercicio do Usuario");
+                System.out.println("8 - Mostrar Todos os Exercicios");
+                int opcaoAdmin = sc.nextInt();
 
-        JButton loginButton = new JButton("Login");
-        loginButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String email = emailTextField.getText();
-                String senha = new String(senhaPasswordField.getPassword());
-
-                // Import Class Connection
-                Conexao con = new Conexao("root", "RootAdmin123");
-
-                // import Metodo para conectar com o banco de dados
-                try (Connection connection = con.conectar()) {
-                    Login login = new Login(email, senha);
-                    Usuario usuario = login.fazerLogin(connection);
-
-                    if (usuario != null) {
-                        frame.dispose(); // Close the login frame
-
-                        if (usuario instanceof Admin) {
-                            String[] opcoesAdmin = { "Exibir Todos os Usuarios", "Deletar Usuario", "Alterar Usuario",
-                                    "Cadastrar Usuario", "Cadastrar Admin", "Sair" };
-                            int opcaoAdmin = JOptionPane.showOptionDialog(null, "Você é um administrador.",
-                                    "Opções do Administrador", JOptionPane.DEFAULT_OPTION,
-                                    JOptionPane.PLAIN_MESSAGE, null, opcoesAdmin, opcoesAdmin[0]);
-
-                            switch (opcaoAdmin) {
-                                case 0:
-                                    Admin.exibirTodosUsuarios(connection);
-                                    break;
-                                case 1:
-                                    Admin.deletarUsuario(connection, null);
-                                    break;
-                                case 2:
-                                    Admin.alterarUsuario(connection, null);
-                                    break;
-                                case 3:
-                                    Admin.cadastrarUsuario(connection, null);
-                                    break;
-                                case 4:
-                                    Admin.cadastrarAdmin(connection, null);
-                                    break;
-                                case 5:
-                                    createAndShowGUI(); // Go back to login interface
-                                    break;
-                                default:
-                                    JOptionPane.showMessageDialog(null, "Opcao invalida.");
-                                    break;
-                            }
-                        } else {
-                            String[] opcoesUsuario = { "Exibir Dados", "Alterar Dados", "Deletar Conta", "Sair" };
-                            int opcaoUsuario = JOptionPane.showOptionDialog(null, "Você é um usuario.",
-                                    "Opções do Usuario", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
-                                    opcoesUsuario, opcoesUsuario[0]);
-
-                            switch (opcaoUsuario) {
-                                case 0:
-                                    usuario.exibirDados(connection);
-                                    break;
-                                case 1:
-                                    usuario.alterarDados(connection);
-                                    break;
-                                case 2:
-                                    usuario.deletarConta(connection, null);
-                                    break;
-                                case 3:
-                                    createAndShowGUI(); // Go back to login interface
-                                    break;
-                                default:
-                                    JOptionPane.showMessageDialog(null, "Opcao invalida.");
-                                    break;
-                            }
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Email ou senha incorretos.");
-                    }
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
+                switch (opcaoAdmin) {
+                    case 1:
+                        Admin.exibirTodosUsuarios(connection);
+                        break;
+                    case 2:
+                        Admin.deletarUsuario(connection, sc);
+                        break;
+                    case 3:
+                        Admin.alterarUsuario(connection, sc);
+                        break;
+                    case 4:
+                        Admin.cadastrarUsuario(connection, sc);
+                        break;
+                    case 5:
+                        Admin.cadastrarAdmin(connection, sc);
+                        break;
+                    case 6:
+                        Admin.alterarExercicio(connection, sc);
+                        break;
+                    case 7:
+                        Admin.AlterarExercicioDoUsuario(connection, sc);
+                        break;
+                    case 8:
+                        Admin.mostratTodosExercicios(connection);
+                        break;
+                    default:
+                        System.out.println("Opcao invalida.");
+                        break;
                 }
+            } else {
+                int opcaoUsuario;
+                do {
+                    clearConsole();
+
+                    System.out.println("Você é um usuario.");
+                    usuario.DadosUsuarioExibir(connection);
+                    System.out.println("Escolha uma opcao: ");
+                    System.out.println("0 - Selecionar um Exercicio");
+                    System.out.println("1 - Exibir Dados");
+                    System.out.println("2 - Alterar Dados");
+                    System.out.println("3 - Deletar Conta");
+                    System.out.println("9 - Sair");
+                    opcaoUsuario = sc.nextInt();
+
+                    switch (opcaoUsuario) {
+                        case 0:
+                            usuario.selecionarExercicio(connection, sc);
+                            break;
+                        case 1:
+                            usuario.exibirDados(connection);
+                            break;
+                        case 2:
+                            usuario.alterarDados(connection);
+                            break;
+                        case 3:
+                            usuario.deletarConta(connection, sc);
+                            break;
+                        case 9:
+                            System.out.println("Saindo...");
+                            break;
+                        default:
+                            System.out.println("Opcao invalida.");
+                            break;
+                    }
+                } while (opcaoUsuario != 9);
             }
-        });
+        } else {
+            System.out.println("Email ou senha incorretos.");
+        }
+    }
 
-        JButton cadastrarButton = new JButton("Fazer Cadastro");
-        cadastrarButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Cadastro cadastro = new Cadastro();
-                cadastro.setVisible(true);
+    public static void clearConsole() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                Runtime.getRuntime().exec("clear");
             }
-        });
-
-        frame.add(emailLabel);
-        frame.add(emailTextField);
-        frame.add(senhaLabel);
-        frame.add(senhaPasswordField);
-        frame.add(new JLabel());
-        frame.add(loginButton);
-        frame.add(new JLabel());
-        frame.add(cadastrarButton);
-
-        frame.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

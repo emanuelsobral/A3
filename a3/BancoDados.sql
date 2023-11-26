@@ -57,9 +57,12 @@ Intensidades: 1 - Facil,
 */
 
 /*---Populando tabela de usuário---*/
-INSERT INTO usuario (nome, email, senha, altura, idade, peso, frequencia, genero, admin) 
-VALUES  ('Carlos', 'carlos@email.com', 'senhacarlos', 1.76, 38, 65.7, 4, 'M'),
-        ('Admin', 'admin@admin.com', 'admin', 1.72, 43, 72.2, 5, 'M', 1),
-        ('Maria', 'maria@email.com', 'maria123', 1.62, 28, 54.2, 2, 'F'),
-        ('Roberto', 'roberto@email.com', 'roberto34', 1.72, 43, 72.2, 5, 'M');        
+INSERT INTO usuario (nome, email, senha, altura, idade, peso, genero, exercicioID) 
+VALUES  ('Carlos', 'carlos@email.com', 'senhacarlos', 1.76, 38, 65.7, 'M', 0),
+        ('Maria', 'maria@email.com', 'maria123', 1.62, 28, 54.2, 'F', 0),
+        ('Roberto', 'roberto@email.com', 'roberto34', 1.72, 43, 72.2, 'M', 0),
+        ('Usuario', 'usuario', 'usuario', 1.72, 43, 72.2, 'M', 0);
+
         
+INSERT INTO usuario (nome, email, senha, altura, idade, peso, frequencia, genero, admin) 
+VALUES  ('Admin', 'admin', 'admin', 1.72, 43, 72.2, 5, 'M', 1);
