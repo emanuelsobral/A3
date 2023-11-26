@@ -42,12 +42,12 @@ public class Main {
                     Usuario usuario = login.fazerLogin(connection);
 
                     if (usuario != null) {
-                        JOptionPane.showMessageDialog(frame, "Login efetuado com sucesso.");
+                        frame.dispose(); // Close the login frame
 
                         if (usuario instanceof Admin) {
                             String[] opcoesAdmin = { "Exibir Todos os Usuarios", "Deletar Usuario", "Alterar Usuario",
-                                    "Cadastrar Usuario", "Cadastrar Admin" };
-                            int opcaoAdmin = JOptionPane.showOptionDialog(frame, "Você é um administrador.",
+                                    "Cadastrar Usuario", "Cadastrar Admin", "Sair" };
+                            int opcaoAdmin = JOptionPane.showOptionDialog(null, "Você é um administrador.",
                                     "Opções do Administrador", JOptionPane.DEFAULT_OPTION,
                                     JOptionPane.PLAIN_MESSAGE, null, opcoesAdmin, opcoesAdmin[0]);
 
@@ -67,13 +67,16 @@ public class Main {
                                 case 4:
                                     Admin.cadastrarAdmin(connection, null);
                                     break;
+                                case 5:
+                                    createAndShowGUI(); // Go back to login interface
+                                    break;
                                 default:
-                                    JOptionPane.showMessageDialog(frame, "Opcao invalida.");
+                                    JOptionPane.showMessageDialog(null, "Opcao invalida.");
                                     break;
                             }
                         } else {
-                            String[] opcoesUsuario = { "Exibir Dados", "Alterar Dados", "Deletar Conta" };
-                            int opcaoUsuario = JOptionPane.showOptionDialog(frame, "Você é um usuario.",
+                            String[] opcoesUsuario = { "Exibir Dados", "Alterar Dados", "Deletar Conta", "Sair" };
+                            int opcaoUsuario = JOptionPane.showOptionDialog(null, "Você é um usuario.",
                                     "Opções do Usuario", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
                                     opcoesUsuario, opcoesUsuario[0]);
 
@@ -87,13 +90,16 @@ public class Main {
                                 case 2:
                                     usuario.deletarConta(connection, null);
                                     break;
+                                case 3:
+                                    createAndShowGUI(); // Go back to login interface
+                                    break;
                                 default:
-                                    JOptionPane.showMessageDialog(frame, "Opcao invalida.");
+                                    JOptionPane.showMessageDialog(null, "Opcao invalida.");
                                     break;
                             }
                         }
                     } else {
-                        JOptionPane.showMessageDialog(frame, "Email ou senha incorretos.");
+                        JOptionPane.showMessageDialog(null, "Email ou senha incorretos.");
                     }
                 } catch (SQLException ex) {
                     ex.printStackTrace();
