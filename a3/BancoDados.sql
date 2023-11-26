@@ -33,20 +33,20 @@ INSERT INTO exercicios (exercicio, intensidade, fatorIntensidade, MET) VALUES
 ('Natação', 'Difícil', 5, 10.0),
 ('Yoga', 'Fácil', 1, 2.5),
 ('Musculação', 'Moderado', 3, 5.0),
-('Boxe', 'Difícil',5,12.0);
-('Escalada', 'Difícil', 5 , 11.0);
-('HIIT', 'Difícil', 5 , 15.0);
-('Crossfit', 'Difícil', 5 , 12.0);
-('Pilates', 'Fácil', 1 , 3.0);
-('Tai Chi', 'Iniciante', 2 , 3.0);
-('Dança Zumba', 'Moderado', 3 , 6.0);
-('Basquete', 'Moderado', 3 , 6.5);
-('Futebol', 'Avançado', 4 , 7.0);
-('Saltar Corda', 'Avançado', 4, 10.0);
-('Corida em ladeira'), 'Difícil', 5 , 15.0);
-('Remo', 'Difícil', 5 , 12.0);
-('Ciclismo em terreno acidentado', 'Difícil' , 5 , 14.0);
-('Treinamento de intervalo de alta intensidade (HIIT) com pesos', 'Difícil', 5 , 16.0);
+('Boxe', 'Difícil',5,12.0),
+('Escalada', 'Difícil', 5 , 11.0),
+('HIIT', 'Difícil', 5 , 15.0),
+('Crossfit', 'Difícil', 5 , 12.0),
+('Pilates', 'Fácil', 1 , 3.0),
+('Tai Chi', 'Iniciante', 2 , 3.0),
+('Dança Zumba', 'Moderado', 3 , 6.0),
+('Basquete', 'Moderado', 3 , 6.5),
+('Futebol', 'Avançado', 4 , 7.0),
+('Saltar Corda', 'Avançado', 4, 10.0),
+('Corida em ladeira', 'Difícil', 5 , 15.0),
+('Remo', 'Difícil', 5 , 12.0),
+('Ciclismo em terreno acidentado', 'Difícil' , 5 , 14.0),
+('HIIT com pesos', 'Difícil', 5 , 16.0);
 
 /*
 Intensidades: 1 - Facil, 
@@ -61,4 +61,5 @@ INSERT INTO usuario (nome, email, senha, altura, idade, peso, frequencia, genero
 VALUES  ('Carlos', 'carlos@email.com', 'senhacarlos', 1.76, 38, 65.7, 4, 'M'),
         ('Admin', 'admin@admin.com', 'admin', 1.72, 43, 72.2, 5, 'M', 1),
         ('Maria', 'maria@email.com', 'maria123', 1.62, 28, 54.2, 2, 'F'),
-        ('Roberto', 'roberto@email.com', 'roberto34', 1.72, 43, 72.2, 5, 'M');
+        ('Roberto', 'roberto@email.com', 'roberto34', 1.72, 43, 72.2, 5, 'M');        
+        
