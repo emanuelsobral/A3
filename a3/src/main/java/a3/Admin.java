@@ -1,7 +1,14 @@
 package a3;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.Scanner;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 public class Admin extends Usuario {
     public Admin(int id, String nome, float altura, int idade, float peso, int frequencia, String genero) {
@@ -50,6 +57,84 @@ public class Admin extends Usuario {
 
     }
     
+    public static void showAdminOptions(Connection connection) {
+        String[] adminOptions = {"Exibir Todos os Usuarios", "Deletar Usuario", "Alterar Usuario", "Cadastrar Usuario", "Cadastrar Admin", "Alterar Exercicio ou Cadastrar Exercicio", "Alterar Exercicio do Usuario", "Mostrar Todos os Exercicios"};
+        JPanel adminPanel = new JPanel();
+        adminPanel.setLayout(new BoxLayout(adminPanel, BoxLayout.Y_AXIS));
+
+        for (String option : adminOptions) {
+            JButton button = new JButton(option);
+            adminPanel.add(button);
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    switch (option) {
+                        case "Exibir Todos os Usuarios":
+                            try {
+                                Admin.exibirTodosUsuarios(connection);
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                            break;
+                        case "Deletar Usuario":
+                            try {
+                                Admin.deletarUsuario(connection, new Scanner(System.in));
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                            break;
+                        case "Alterar Usuario":
+                            try {
+                                Admin.alterarUsuario(connection, new Scanner(System.in));
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                            break;
+                        case "Cadastrar Usuario":
+                            try {
+                                Admin.cadastrarUsuario(connection, new Scanner(System.in));
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                            break;
+                        case "Cadastrar Admin":
+                            try {
+                                Admin.cadastrarAdmin(connection, new Scanner(System.in));
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                            break;
+                        case "Alterar Exercicio ou Cadastrar Exercicio":
+                            try {
+                                Admin.alterarExercicio(connection, new Scanner(System.in));
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                            break;
+                        case "Alterar Exercicio do Usuario":
+                            try {
+                                Admin.AlterarExercicioDoUsuario(connection, new Scanner(System.in));
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                            break;
+                        case "Mostrar Todos os Exercicios":
+                            try {
+                                Admin.mostratTodosExercicios(connection);
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                            break;
+                        default:
+                            JOptionPane.showMessageDialog(null, "Opcao invalida.");
+                            break;
+                    }
+                }
+
+            });
+        }
+        JOptionPane.showMessageDialog(null, adminPanel, "Admin Options", JOptionPane.PLAIN_MESSAGE);
+    }
 
     public static void cadastrarAdmin(Connection connection, Scanner sc) throws SQLException {
         System.out.print("Digite seu nome: ");

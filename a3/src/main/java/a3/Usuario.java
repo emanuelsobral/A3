@@ -4,44 +4,52 @@ import java.sql.*;
 import java.util.Scanner;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+
 
 public class Usuario {
     protected static final Object DadosUsuarioExibir = null;
     protected static int id;
-    private String nome;
-    private float altura;
-    private int idade;
-    private float peso;
-    private int frequencia;
-    private String genero;
+    private static String nome;
+    private static float altura;
+    private static int idade;
+    private static float peso;
+    private static int frequencia;
+    private static String genero;
     private boolean admin;
-    private int exercicioID;
+    private static int exercicioID;
 
-    Conexao con = new Conexao("root", "RootAdmin123");
+    static Conexao con = new Conexao("root", "RootAdmin123");
 
     public Usuario(int id, String nome, float altura, int idade, float peso, int frequencia, String genero,
             boolean admin, int exercicioID) {
-        this.id = id;
-        this.nome = nome;
-        this.altura = altura;
-        this.idade = idade;
-        this.peso = peso;
-        this.frequencia = frequencia;
-        this.genero = genero;
+        Usuario.id = id;
+        Usuario.nome = nome;
+        Usuario.altura = altura;
+        Usuario.idade = idade;
+        Usuario.peso = peso;
+        Usuario.frequencia = frequencia;
+        Usuario.genero = genero;
         this.admin = admin;
-        this.exercicioID = exercicioID;
+        Usuario.exercicioID = exercicioID;
     }
 
-    public String exercicioAtual(Connection connection) throws SQLException {
-        if (this.exercicioID == 0) {
+    public Usuario(Connection conectar) {
+    }
+
+    public static String exercicioAtual(Connection connection) throws SQLException {
+        if (exercicioID == 0) {
             return "Você não está fazendo nenhum exercício no momento.";
         } else {
             String sql = "SELECT * FROM exercicios WHERE exercicioID = ?";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setInt(1, this.exercicioID);
+                statement.setInt(1, exercicioID);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
                         String exercicio = resultSet.getString("exercicio");
@@ -57,44 +65,115 @@ public class Usuario {
         }
     }
 
-    public void exibirInformacoesUsuario(Connection connection) throws SQLException {
+
+    public class UserInterface extends JFrame {
+        private Connection connection;
+
+        public UserInterface(Connection connection) {
+            this.connection = connection;
+            setTitle("User Options");
+            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            setSize(400, 300);
+            setLayout(new BorderLayout());
+
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.setLayout(new GridLayout(4, 1));
+
+            JButton selectExerciseButton = new JButton("Selecionar um Exercicio");
+            selectExerciseButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        selecionarExercicio(connection, new Scanner(System.in));
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+            buttonPanel.add(selectExerciseButton);
+
+            JButton displayDataButton = new JButton("Exibir Dados");
+            displayDataButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        exibirInformacoesUsuario(connection);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+            buttonPanel.add(displayDataButton);
+
+            JButton updateDataButton = new JButton("Alterar Dados");
+            updateDataButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        alterarDados(connection);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+            buttonPanel.add(updateDataButton);
+
+            JButton deleteAccountButton = new JButton("Deletar Conta");
+            deleteAccountButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        deletarConta(connection, new Scanner(System.in));
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+            buttonPanel.add(deleteAccountButton);
+
+            add(buttonPanel, BorderLayout.CENTER);
+        }
+
+    }
+
+    public static void exibirInformacoesUsuario(Connection connection) throws SQLException {
         JFrame frame = new JFrame("Informações do Usuário");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 300);
         frame.setLayout(null);
 
-        JLabel labelNome = new JLabel("Nome: " + this.nome);
+        JLabel labelNome = new JLabel("Nome: " + nome);
         labelNome.setBounds(20, 20, 300, 20);
         frame.add(labelNome);
 
-        JLabel labelIMC = new JLabel("IMC: " + this.calcularIMC());
+        JLabel labelIMC = new JLabel("IMC: " + calcularIMC());
         labelIMC.setBounds(20, 50, 300, 20);
         frame.add(labelIMC);
 
-        JLabel labelGastoCaloricoBasal = new JLabel("Gasto Calórico Basal: " + this.calcularGastoCaloricoBasal());
+        JLabel labelGastoCaloricoBasal = new JLabel("Gasto Calórico Basal: " + calcularGastoCaloricoBasal());
         labelGastoCaloricoBasal.setBounds(20, 80, 300, 20);
         frame.add(labelGastoCaloricoBasal);
 
         JLabel labelTempoAtividadeRecomendada = new JLabel(
-                "Tempo de Atividade Recomendada: " + this.calcularTempoAtividadeRecomendada());
+                "Tempo de Atividade Recomendada: " + calcularTempoAtividadeRecomendada());
         labelTempoAtividadeRecomendada.setBounds(20, 110, 300, 20);
         frame.add(labelTempoAtividadeRecomendada);
 
-        if (this.frequencia == 0) {
+        if (frequencia == 0) {
             JLabel labelSemExercicio = new JLabel("Você não está fazendo nenhum exercício no momento.");
             labelSemExercicio.setBounds(20, 140, 300, 20);
             frame.add(labelSemExercicio);
         } else {
-            JLabel labelFrequencia = new JLabel("Frequência: " + this.frequencia + " vezes por semana");
+            JLabel labelFrequencia = new JLabel("Frequência: " + frequencia + " vezes por semana");
             labelFrequencia.setBounds(20, 140, 300, 20);
             frame.add(labelFrequencia);
 
-            JLabel labelExercicioAtual = new JLabel("Exercício Atual: " + this.exercicioAtual(connection));
+            JLabel labelExercicioAtual = new JLabel("Exercício Atual: " + exercicioAtual(connection));
             labelExercicioAtual.setBounds(20, 170, 300, 20);
             frame.add(labelExercicioAtual);
 
             JLabel labelTempoExercicio = new JLabel(
-                    "Tempo de Exercício: " + this.calcularTempoExercicio() + " minutos por dia");
+                    "Tempo de Exercício: " + calcularTempoExercicio() + " minutos por dia");
             labelTempoExercicio.setBounds(20, 200, 300, 20);
             frame.add(labelTempoExercicio);
         }
@@ -111,18 +190,18 @@ public class Usuario {
         frame.setVisible(true);
     }
 
-    private String calcularTempoExercicio() {
+    private static String calcularTempoExercicio() {
         String sql = "SELECT * FROM exercicios WHERE exercicioID = ?";
         try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
-            statement.setInt(1, this.exercicioID);
+            statement.setInt(1, exercicioID);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    if (this.idade < 18) {
-                        return String.valueOf((60 / this.frequencia));
-                    } else if (this.idade < 64) {
-                        return String.valueOf((150 / this.frequencia));
+                    if (idade < 18) {
+                        return String.valueOf((60 / frequencia));
+                    } else if (idade < 64) {
+                        return String.valueOf((150 / frequencia));
                     } else {
-                        return String.valueOf((120 / this.frequencia));
+                        return String.valueOf((120 / frequencia));
                     }
                 } else {
                     System.out.println("Erro ao calcular tempo de exercício.");
@@ -134,28 +213,28 @@ public class Usuario {
         return null;
     }
 
-    private String calcularTempoAtividadeRecomendada() {
-        if (this.idade < 17) {
+    private static String calcularTempoAtividadeRecomendada() {
+        if (idade < 17) {
             return "60 minutos";
-        } else if (this.idade < 64) {
+        } else if (idade < 64) {
             return "150 minutos";
         } else {
             return "120 minutos";
         }
     }
 
-    private String calcularGastoCaloricoBasal() {
+    private static String calcularGastoCaloricoBasal() {
         float gastoCaloricoBasal;
-        if (this.genero.equalsIgnoreCase("M")) {
-            gastoCaloricoBasal = (float) (66.5 + (13.75 * this.peso) + (5.003 * this.altura) - (6.755 * this.idade));
+        if (genero.equalsIgnoreCase("M")) {
+            gastoCaloricoBasal = (float) (66.5 + (13.75 * peso) + (5.003 * altura) - (6.755 * idade));
         } else {
-            gastoCaloricoBasal = (float) (655.1 + (9.563 * this.peso) + (1.850 * this.altura) - (4.676 * this.idade));
+            gastoCaloricoBasal = (float) (655.1 + (9.563 * peso) + (1.850 * altura) - (4.676 * idade));
         }
         return String.format("%.2f", gastoCaloricoBasal);
     }
 
-    private String calcularIMC() {
-        float imc = this.peso / (this.altura * this.altura);
+    private static String calcularIMC() {
+        float imc = peso / (altura * altura);
         if (imc < 18.5) {
             return "Abaixo do peso";
         } else if (imc < 25) {
@@ -171,7 +250,7 @@ public class Usuario {
         }
     }
 
-    public void selecionarExercicio(Connection connection, Scanner sc) throws SQLException {
+    public static void selecionarExercicio(Connection connection, Scanner sc) throws SQLException {
         System.out.println("Escolha um exercício: ");
         ExibirExercicios(connection);
         System.out.print("Digite o ID do exercício: ");
@@ -184,7 +263,7 @@ public class Usuario {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, exercicioID);
             statement.setInt(2, frequencia);
-            statement.setInt(3, this.id);
+            statement.setInt(3, id);
             int linhasAfetadas = statement.executeUpdate();
             if (linhasAfetadas > 0) {
                 System.out.println("Exercício selecionado com sucesso.");
@@ -194,7 +273,7 @@ public class Usuario {
         }
     }
 
-    private void ExibirExercicios(Connection connection) throws SQLException {
+    private static void ExibirExercicios(Connection connection) throws SQLException {
         String sql = "SELECT * FROM exercicios";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -216,7 +295,7 @@ public class Usuario {
     public void exibirDados(Connection connection) throws SQLException {
         String sql = "SELECT * FROM usuario WHERE userID = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, this.id);
+            statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     String nome = resultSet.getString("nome");
@@ -240,13 +319,13 @@ public class Usuario {
         }
     }
 
-    public void deletarConta(Connection connection, Scanner sc) throws SQLException {
+    public static void deletarConta(Connection connection, Scanner sc) throws SQLException {
         System.out.println("Tem certeza que deseja deletar a conta? (S/N)");
         String confirmacao = sc.nextLine();
         if (confirmacao.equalsIgnoreCase("S")) {
             String sql = "DELETE FROM usuario WHERE userID = ?";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setInt(1, this.id);
+                statement.setInt(1, id);
                 int linhasAfetadas = statement.executeUpdate();
                 if (linhasAfetadas > 0) {
                     System.out.println("Conta deletada com sucesso.");
@@ -259,10 +338,10 @@ public class Usuario {
         }
     }
 
-    public void alterarDados(Connection connection) throws SQLException {
+    public static void alterarDados(Connection connection) throws SQLException {
         String sql = "SELECT * FROM usuario WHERE userID = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, this.id);
+            statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     System.out.println("Usuario encontrado.");
