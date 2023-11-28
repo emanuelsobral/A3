@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 
 public class Usuario {
@@ -316,22 +317,22 @@ public class Usuario {
         }
     }
 
+
     public static void deletarConta(Connection connection, Scanner sc) throws SQLException {
-        System.out.println("Tem certeza que deseja deletar a conta? (S/N)");
-        String confirmacao = sc.nextLine();
-        if (confirmacao.equalsIgnoreCase("S")) {
+        int resposta = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja deletar a conta?", "Confirmação", JOptionPane.YES_NO_OPTION);
+        if (resposta == JOptionPane.YES_OPTION) {
             String sql = "DELETE FROM usuario WHERE userID = ?";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, id);
                 int linhasAfetadas = statement.executeUpdate();
                 if (linhasAfetadas > 0) {
-                    System.out.println("Conta deletada com sucesso.");
+                    JOptionPane.showMessageDialog(null, "Conta deletada com sucesso.");
                 } else {
-                    System.out.println("Erro ao deletar conta.");
+                    JOptionPane.showMessageDialog(null, "Erro ao deletar conta.");
                 }
             }
         } else {
-            System.out.println("Operação cancelada.");
+            JOptionPane.showMessageDialog(null, "Operação cancelada.");
         }
     }
 
