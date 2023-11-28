@@ -257,8 +257,8 @@ public class Usuario {
 
             JLabel exercicioLabel = new JLabel("Escolha um exercício:");
             JComboBox<String> exercicioComboBox = new JComboBox<>();
-            JLabel frequenciaLabel = new JLabel("Digite a frequência semanal de exercícios:");
-            JTextField frequenciaTextField = new JTextField();
+            JLabel frequenciaLabel = new JLabel("Selecione a frequência semanal de exercícios:");
+            JComboBox<Integer> frequenciaComboBox = new JComboBox<>(new Integer[]{1, 2, 3, 4, 5, 6, 7});
 
             JButton selecionarButton = new JButton("Selecionar");
             JButton voltarButton = new JButton("Voltar");
@@ -266,7 +266,7 @@ public class Usuario {
             panel.add(exercicioLabel);
             panel.add(exercicioComboBox);
             panel.add(frequenciaLabel);
-            panel.add(frequenciaTextField);
+            panel.add(frequenciaComboBox);
             panel.add(voltarButton);
             panel.add(selecionarButton);
 
@@ -283,7 +283,7 @@ public class Usuario {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int exercicioID = exercicioComboBox.getSelectedIndex() + 1;
-                    int frequencia = Integer.parseInt(frequenciaTextField.getText());
+                    int frequencia = (int) frequenciaComboBox.getSelectedItem();
 
                     String sql = "UPDATE usuario SET exercicioID = ?, frequencia = ? WHERE userID = ?";
                     try (PreparedStatement statement = connection.prepareStatement(sql)) {
