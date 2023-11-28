@@ -158,7 +158,7 @@ public class Usuario {
 
         if (frequencia == 0) {
             JLabel labelSemExercicio = new JLabel("Você não está fazendo nenhum exercício no momento.");
-            labelSemExercicio.setBounds(20, 140, 300, 20);
+            labelSemExercicio.setBounds(20, 140, 400, 20);
             frame.add(labelSemExercicio);
         } else {
             JLabel labelFrequencia = new JLabel("Frequência: " + frequencia + " vezes por semana");
