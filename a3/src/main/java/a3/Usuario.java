@@ -1,20 +1,16 @@
 package a3;
 
-import java.sql.*;
 import java.util.Scanner;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.swing.JOptionPane;
-import javax.swing.JComboBox;
 import javax.swing.*;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Usuario {
     protected static final Object DadosUsuarioExibir = null;
@@ -96,7 +92,7 @@ public class Usuario {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        selecionarExercicio(connection, new Scanner(System.in));
+                        selecionarExercicio(connection);
                     } catch (SQLException e1) {
                         e1.printStackTrace();
                     }
@@ -249,47 +245,86 @@ public class Usuario {
         }
     }
 
-    public static void selecionarExercicio(Connection connection, Scanner sc) throws SQLException {
-        System.out.println("Escolha um exercício: ");
-        ExibirExercicios(connection);
-        System.out.print("Digite o ID do exercício: ");
-        int exercicioID = sc.nextInt();
-        sc.nextLine(); // consumir a quebra de linha
-        System.out.print("Digite a frequência semanal de exercícios: ");
-        int frequencia = sc.nextInt();
-        sc.nextLine(); // consumir a quebra de linha
-        String sql = "UPDATE usuario SET exercicioID = ?, frequencia = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, exercicioID);
-            statement.setInt(2, frequencia);
-            statement.setInt(3, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Exercício selecionado com sucesso.");
-            } else {
-                System.out.println("Erro ao selecionar exercício.");
-            }
-        }
-    }
 
-    private static void ExibirExercicios(Connection connection) throws SQLException {
-        String sql = "SELECT * FROM exercicios";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    int exercicioID = resultSet.getInt("exercicioID");
-                    String exercicio = resultSet.getString("exercicio");
-                    String intensidade = resultSet.getString("intensidade");
-                    float MET = resultSet.getFloat("MET");
-                    System.out.println("ID: " + exercicioID);
-                    System.out.println("Exercicio: " + exercicio);
-                    System.out.println("Intensidade: " + intensidade);
-                    System.out.println("MET: " + MET);
-                    System.out.println();
+        public static void selecionarExercicio(Connection connection) throws SQLException {
+            JFrame frame = new JFrame("Selecionar Exercício");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(400, 300);
+            frame.setLayout(new BorderLayout());
+
+            JPanel panel = new JPanel();
+            panel.setLayout(new GridLayout(4, 2));
+
+            JLabel exercicioLabel = new JLabel("Escolha um exercício:");
+            JComboBox<String> exercicioComboBox = new JComboBox<>();
+            JLabel frequenciaLabel = new JLabel("Digite a frequência semanal de exercícios:");
+            JTextField frequenciaTextField = new JTextField();
+
+            JButton selecionarButton = new JButton("Selecionar");
+            JButton voltarButton = new JButton("Voltar");
+
+            panel.add(exercicioLabel);
+            panel.add(exercicioComboBox);
+            panel.add(frequenciaLabel);
+            panel.add(frequenciaTextField);
+            panel.add(voltarButton);
+            panel.add(selecionarButton);
+
+            frame.add(panel, BorderLayout.CENTER);
+            frame.setVisible(true);
+
+            // Populate the exercise combo box
+            List<String> exercicios = getExercicios(connection);
+            for (String exercicio : exercicios) {
+                exercicioComboBox.addItem(exercicio);
+            }
+
+            selecionarButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int exercicioID = exercicioComboBox.getSelectedIndex() + 1;
+                    int frequencia = Integer.parseInt(frequenciaTextField.getText());
+
+                    String sql = "UPDATE usuario SET exercicioID = ?, frequencia = ? WHERE userID = ?";
+                    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                        statement.setInt(1, exercicioID);
+                        statement.setInt(2, frequencia);
+                        statement.setInt(3, id);
+                        int linhasAfetadas = statement.executeUpdate();
+                        if (linhasAfetadas > 0) {
+                            JOptionPane.showMessageDialog(frame, "Exercício selecionado com sucesso.");
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Erro ao selecionar exercício.");
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            voltarButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    frame.dispose(); // Close the current frame
+                }
+            });
+        }
+
+        private static List<String> getExercicios(Connection connection) throws SQLException {
+            List<String> exercicios = new ArrayList<>();
+            String sql = "SELECT * FROM exercicios";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        String exercicio = resultSet.getString("exercicio");
+                        String intensidade = resultSet.getString("intensidade");
+                        exercicios.add(exercicio + " (" + intensidade + ")");
+                    }
                 }
             }
+            return exercicios;
         }
-    }
+
 
     public void exibirDados(Connection connection) throws SQLException {
         String sql = "SELECT * FROM usuario WHERE userID = ?";
