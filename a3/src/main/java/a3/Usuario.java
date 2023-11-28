@@ -67,10 +67,7 @@ public class Usuario {
 
 
     public class UserInterface extends JFrame {
-        private Connection connection;
-
         public UserInterface(Connection connection) {
-            this.connection = connection;
             setTitle("User Options");
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setSize(400, 300);
