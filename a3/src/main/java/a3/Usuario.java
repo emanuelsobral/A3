@@ -13,7 +13,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
-
 public class Usuario {
     protected static final Object DadosUsuarioExibir = null;
     protected static int id;
@@ -66,7 +65,6 @@ public class Usuario {
         }
     }
 
-
     public class UserInterface extends JFrame {
         public UserInterface(Connection connection) {
             setTitle("User Options");
@@ -76,19 +74,6 @@ public class Usuario {
 
             JPanel buttonPanel = new JPanel();
             buttonPanel.setLayout(new GridLayout(4, 1));
-
-            JButton selectExerciseButton = new JButton("Selecionar um Exercicio");
-            selectExerciseButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        selecionarExercicio(connection, new Scanner(System.in));
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            });
-            buttonPanel.add(selectExerciseButton);
 
             JButton displayDataButton = new JButton("Exibir Dados");
             displayDataButton.addActionListener(new ActionListener() {
@@ -102,6 +87,19 @@ public class Usuario {
                 }
             });
             buttonPanel.add(displayDataButton);
+
+            JButton selectExerciseButton = new JButton("Selecionar um Exercicio");
+            selectExerciseButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        selecionarExercicio(connection, new Scanner(System.in));
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+            buttonPanel.add(selectExerciseButton);
 
             JButton updateDataButton = new JButton("Alterar Dados");
             updateDataButton.addActionListener(new ActionListener() {
@@ -317,9 +315,9 @@ public class Usuario {
         }
     }
 
-
     public static void deletarConta(Connection connection, Scanner sc) throws SQLException {
-        int resposta = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja deletar a conta?", "Confirmação", JOptionPane.YES_NO_OPTION);
+        int resposta = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja deletar a conta?", "Confirmação",
+                JOptionPane.YES_NO_OPTION);
         if (resposta == JOptionPane.YES_OPTION) {
             String sql = "DELETE FROM usuario WHERE userID = ?";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
