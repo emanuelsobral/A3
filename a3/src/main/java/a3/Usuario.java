@@ -13,6 +13,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
+import javax.swing.*;
+import java.sql.PreparedStatement;
+
 
 public class Usuario {
     protected static final Object DadosUsuarioExibir = null;
@@ -390,133 +393,301 @@ public class Usuario {
         }
     }
 
+        private static void alterarNome(Connection connection, Scanner sc, int id) throws SQLException {
+            JFrame frame = new JFrame("Alterar Nome");
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setSize(300, 150);
+            frame.setLayout(new FlowLayout());
 
-    private static void alterarNome(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite o novo nome: ");
-        String novoNome = sc.nextLine();
-        String sql = "UPDATE usuario SET nome = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, novoNome);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Nome alterado com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar nome.");
-            }
-        }
-    }
+            JLabel nomeLabel = new JLabel("Digite o novo nome: ");
+            JTextField nomeField = new JTextField(20);
+            JButton alterarButton = new JButton("Alterar");
 
-    private static void alterarEmail(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite o novo email: ");
-        String novoEmail = sc.nextLine();
-        String sql = "UPDATE usuario SET email = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, novoEmail);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Email alterado com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar email.");
-            }
+            alterarButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String novoNome = nomeField.getText();
+                    String sql = "UPDATE usuario SET nome = ? WHERE userID = ?";
+                    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                        statement.setString(1, novoNome);
+                        statement.setInt(2, id);
+                        int linhasAfetadas = statement.executeUpdate();
+                        if (linhasAfetadas > 0) {
+                            JOptionPane.showMessageDialog(frame, "Nome alterado com sucesso.");
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Erro ao alterar nome.");
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            frame.add(nomeLabel);
+            frame.add(nomeField);
+            frame.add(alterarButton);
+
+            frame.setVisible(true);
         }
-    }
+
+        private static void alterarEmail(Connection connection, Scanner sc, int id) throws SQLException {
+            JFrame frame = new JFrame("Alterar Email");
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setSize(300, 150);
+            frame.setLayout(new FlowLayout());
+
+            JLabel emailLabel = new JLabel("Digite o novo email: ");
+            JTextField emailField = new JTextField(20);
+            JButton alterarButton = new JButton("Alterar");
+
+            alterarButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String novoEmail = emailField.getText();
+                    String sql = "UPDATE usuario SET email = ? WHERE userID = ?";
+                    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                        statement.setString(1, novoEmail);
+                        statement.setInt(2, id);
+                        int linhasAfetadas = statement.executeUpdate();
+                        if (linhasAfetadas > 0) {
+                            JOptionPane.showMessageDialog(frame, "Email alterado com sucesso.");
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Erro ao alterar email.");
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            frame.add(emailLabel);
+            frame.add(emailField);
+            frame.add(alterarButton);
+
+            frame.setVisible(true);
+        }
 
     private static void alterarSenha(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite a nova senha: ");
-        String novaSenha = sc.nextLine();
-        String sql = "UPDATE usuario SET senha = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, novaSenha);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Senha alterada com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar senha.");
+        JFrame frame = new JFrame("Alterar Senha");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(300, 150);
+        frame.setLayout(new FlowLayout());
+
+        JLabel senhaLabel = new JLabel("Digite a nova senha: ");
+        JPasswordField senhaField = new JPasswordField(20);
+        JButton alterarButton = new JButton("Alterar");
+
+        alterarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                char[] novaSenhaChars = senhaField.getPassword();
+                String novaSenha = new String(novaSenhaChars);
+                String sql = "UPDATE usuario SET senha = ? WHERE userID = ?";
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setString(1, novaSenha);
+                    statement.setInt(2, id);
+                    int linhasAfetadas = statement.executeUpdate();
+                    if (linhasAfetadas > 0) {
+                        JOptionPane.showMessageDialog(frame, "Senha alterada com sucesso.");
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Erro ao alterar senha.");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
-        }
+        });
+
+        frame.add(senhaLabel);
+        frame.add(senhaField);
+        frame.add(alterarButton);
+
+        frame.setVisible(true);
     }
 
-    private static void alterarAltura(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite a nova altura em metros: ");
-        float novaAltura = sc.nextFloat();
-        String sql = "UPDATE usuario SET altura = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setFloat(1, novaAltura);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Altura alterada com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar altura.");
-            }
+private static void alterarAltura(Connection connection, Scanner sc, int id) throws SQLException {
+            JFrame frame = new JFrame("Alterar Altura");
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setSize(300, 150);
+            frame.setLayout(new FlowLayout());
+
+            JLabel alturaLabel = new JLabel("Digite a nova altura em metros: ");
+            JTextField alturaField = new JTextField(10);
+            JButton alterarButton = new JButton("Alterar");
+
+            alterarButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    float novaAltura = Float.parseFloat(alturaField.getText());
+                    String sql = "UPDATE usuario SET altura = ? WHERE userID = ?";
+                    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                        statement.setFloat(1, novaAltura);
+                        statement.setInt(2, id);
+                        int linhasAfetadas = statement.executeUpdate();
+                        if (linhasAfetadas > 0) {
+                            JOptionPane.showMessageDialog(frame, "Altura alterada com sucesso.");
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Erro ao alterar altura.");
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            frame.add(alturaLabel);
+            frame.add(alturaField);
+            frame.add(alterarButton);
+
+            frame.setVisible(true);
         }
-    }
 
     private static void alterarIdade(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite a nova idade em anos: ");
-        int novaIdade = sc.nextInt();
-        String sql = "UPDATE usuario SET idade = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, novaIdade);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Idade alterada com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar idade.");
+        JFrame frame = new JFrame("Alterar Idade");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(300, 150);
+        frame.setLayout(new FlowLayout());
+
+        JLabel idadeLabel = new JLabel("Digite a nova idade em anos: ");
+        JTextField idadeField = new JTextField(10);
+        JButton alterarButton = new JButton("Alterar");
+
+        alterarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int novaIdade = Integer.parseInt(idadeField.getText());
+                String sql = "UPDATE usuario SET idade = ? WHERE userID = ?";
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setInt(1, novaIdade);
+                    statement.setInt(2, id);
+                    int linhasAfetadas = statement.executeUpdate();
+                    if (linhasAfetadas > 0) {
+                        JOptionPane.showMessageDialog(frame, "Idade alterada com sucesso.");
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Erro ao alterar idade.");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
-        }
+        });
+
+        frame.add(idadeLabel);
+        frame.add(idadeField);
+        frame.add(alterarButton);
+
+        frame.setVisible(true);
     }
 
     private static void alterarPeso(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite o novo peso em quilos: ");
-        float novoPeso = sc.nextFloat();
-        String sql = "UPDATE usuario SET peso = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setFloat(1, novoPeso);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Peso alterado com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar peso.");
+        JFrame frame = new JFrame("Alterar Peso");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(300, 150);
+        frame.setLayout(new FlowLayout());
+
+        JLabel pesoLabel = new JLabel("Digite o novo peso em quilos: ");
+        JTextField pesoField = new JTextField(10);
+        JButton alterarButton = new JButton("Alterar");
+
+        alterarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                float novoPeso = Float.parseFloat(pesoField.getText());
+                String sql = "UPDATE usuario SET peso = ? WHERE userID = ?";
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setFloat(1, novoPeso);
+                    statement.setInt(2, id);
+                    int linhasAfetadas = statement.executeUpdate();
+                    if (linhasAfetadas > 0) {
+                        JOptionPane.showMessageDialog(frame, "Peso alterado com sucesso.");
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Erro ao alterar peso.");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
-        }
+        });
+
+        frame.add(pesoLabel);
+        frame.add(pesoField);
+        frame.add(alterarButton);
+
+        frame.setVisible(true);
     }
 
     private static void alterarFrequencia(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite a nova frequencia semanal de exercicios (0 a 7): ");
-        int novaFrequencia = sc.nextInt();
-        String sql = "UPDATE usuario SET frequencia = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, novaFrequencia);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Frequencia alterada com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar frequencia.");
+        JFrame frame = new JFrame("Alterar Frequencia");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(300, 150);
+        frame.setLayout(new FlowLayout());
+
+        JLabel frequenciaLabel = new JLabel("Digite a nova frequencia semanal de exercicios (0 a 7): ");
+        JTextField frequenciaField = new JTextField(10);
+        JButton alterarButton = new JButton("Alterar");
+
+        alterarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int novaFrequencia = Integer.parseInt(frequenciaField.getText());
+                String sql = "UPDATE usuario SET frequencia = ? WHERE userID = ?";
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setInt(1, novaFrequencia);
+                    statement.setInt(2, id);
+                    int linhasAfetadas = statement.executeUpdate();
+                    if (linhasAfetadas > 0) {
+                        JOptionPane.showMessageDialog(frame, "Frequencia alterada com sucesso.");
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Erro ao alterar frequencia.");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
-        }
+        });
+
+        frame.add(frequenciaLabel);
+        frame.add(frequenciaField);
+        frame.add(alterarButton);
+
+        frame.setVisible(true);
     }
 
     private static void alterarGenero(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite o novo genero (M ou F): ");
-        String novoGenero = sc.nextLine();
-        String sql = "UPDATE usuario SET genero = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, novoGenero);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Genero alterado com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar genero.");
+        JFrame frame = new JFrame("Alterar Gênero");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(300, 150);
+        frame.setLayout(new FlowLayout());
+
+        JLabel generoLabel = new JLabel("Digite o novo gênero (M ou F): ");
+        JTextField generoField = new JTextField(10);
+        JButton alterarButton = new JButton("Alterar");
+
+        alterarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String novoGenero = generoField.getText();
+                String sql = "UPDATE usuario SET genero = ? WHERE userID = ?";
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setString(1, novoGenero);
+                    statement.setInt(2, id);
+                    int linhasAfetadas = statement.executeUpdate();
+                    if (linhasAfetadas > 0) {
+                        JOptionPane.showMessageDialog(frame, "Gênero alterado com sucesso.");
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Erro ao alterar gênero.");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
-        }
+        });
+
+        frame.add(generoLabel);
+        frame.add(generoField);
+        frame.add(alterarButton);
+
+        frame.setVisible(true);
     }
 
 }
