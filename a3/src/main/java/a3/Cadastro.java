@@ -4,20 +4,43 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.*;
 
 public class Cadastro {
 
     Conexao con = new Conexao("root", "RootAdmin123");
 
     public static void fazerCadastro(Connection connection) throws SQLException {
-        String nome = JOptionPane.showInputDialog(null, "Digite seu nome:");
-        String email = JOptionPane.showInputDialog(null, "Digite seu email:");
-        String senha = JOptionPane.showInputDialog(null, "Digite sua senha:");
-        float altura = Float.parseFloat(JOptionPane.showInputDialog(null, "Digite sua altura em metros:"));
-        int idade = Integer.parseInt(JOptionPane.showInputDialog(null, "Digite sua idade em anos:"));
-        float peso = Float.parseFloat(JOptionPane.showInputDialog(null, "Digite seu peso em quilos:"));
-        String genero = JOptionPane.showInputDialog(null, "Digite seu genero (M ou F):");
-        cadastrarUsuario(connection, nome, email, senha, altura, idade, peso, genero);
+        JTextField nomeField = new JTextField();
+        JTextField emailField = new JTextField();
+        JPasswordField senhaField = new JPasswordField();
+        JTextField alturaField = new JTextField();
+        JTextField idadeField = new JTextField();
+        JTextField pesoField = new JTextField();
+        JTextField generoField = new JTextField();
+
+        Object[] fields = {
+                "Nome:", nomeField,
+                "Email:", emailField,
+                "Senha:", senhaField,
+                "Altura (metros):", alturaField,
+                "Idade (anos):", idadeField,
+                "Peso (quilos):", pesoField,
+                "Gênero (M ou F):", generoField
+        };
+
+        int option = JOptionPane.showConfirmDialog(null, fields, "Cadastro", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            String nome = nomeField.getText();
+            String email = emailField.getText();
+            String senha = new String(senhaField.getPassword());
+            float altura = Float.parseFloat(alturaField.getText());
+            int idade = Integer.parseInt(idadeField.getText());
+            float peso = Float.parseFloat(pesoField.getText());
+            String genero = generoField.getText();
+
+            cadastrarUsuario(connection, nome, email, senha, altura, idade, peso, genero);
+        }
     }
 
     private static void cadastrarUsuario(Connection connection, String nome, String email, String senha, float altura,
