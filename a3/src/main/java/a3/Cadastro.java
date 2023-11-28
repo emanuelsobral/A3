@@ -3,33 +3,26 @@ package a3;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Scanner;
+import javax.swing.JOptionPane;
 
 public class Cadastro {
 
     Conexao con = new Conexao("root", "RootAdmin123");
 
-    public static void fazerCadastro(Connection connection, Scanner sc) throws SQLException {
-            System.out.print("Digite seu nome: ");
-            String nome = sc.nextLine();
-            System.out.print("Digite seu email: ");
-            String email = sc.nextLine();
-            System.out.print("Digite sua senha: ");
-            String senha = sc.nextLine();
-            System.out.print("Digite sua altura em metros: ");
-            float altura = sc.nextFloat();
-            System.out.print("Digite sua idade em anos: ");
-            int idade = sc.nextInt();
-            System.out.print("Digite seu peso em quilos: ");
-            float peso = sc.nextFloat();
-            System.out.print("Digite seu genero (M ou F): ");
-            String genero = sc.nextLine();
-            cadastrarUsuario(connection, nome, email, senha, altura, idade, peso, genero);
-        }
+    public static void fazerCadastro(Connection connection) throws SQLException {
+        String nome = JOptionPane.showInputDialog(null, "Digite seu nome:");
+        String email = JOptionPane.showInputDialog(null, "Digite seu email:");
+        String senha = JOptionPane.showInputDialog(null, "Digite sua senha:");
+        float altura = Float.parseFloat(JOptionPane.showInputDialog(null, "Digite sua altura em metros:"));
+        int idade = Integer.parseInt(JOptionPane.showInputDialog(null, "Digite sua idade em anos:"));
+        float peso = Float.parseFloat(JOptionPane.showInputDialog(null, "Digite seu peso em quilos:"));
+        String genero = JOptionPane.showInputDialog(null, "Digite seu genero (M ou F):");
+        cadastrarUsuario(connection, nome, email, senha, altura, idade, peso, genero);
+    }
 
     private static void cadastrarUsuario(Connection connection, String nome, String email, String senha, float altura,
             int idade, float peso, String genero) throws SQLException {
-        String sql = "INSERT INTO usuario (nome, email, senha, altura, idade, peso, genero, admin) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO usuario (nome, email, senha, altura, idade, peso, genero, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, nome);
             statement.setString(2, email);
@@ -41,12 +34,10 @@ public class Cadastro {
             statement.setBoolean(8, false);
             int linhasAfetadas = statement.executeUpdate();
             if (linhasAfetadas > 0) {
-                System.out.println("Cadastro realizado com sucesso.");
+                JOptionPane.showMessageDialog(null, "Cadastro realizado com sucesso.");
             } else {
-                System.out.println("Erro ao realizar cadastro.");
+                JOptionPane.showMessageDialog(null, "Erro ao realizar cadastro.");
             }
         }
     }
-
-
 }

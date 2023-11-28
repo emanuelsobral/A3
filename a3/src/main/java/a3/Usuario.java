@@ -2,8 +2,14 @@ package a3;
 
 import java.sql.*;
 import java.util.Scanner;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Usuario {
+    protected static final Object DadosUsuarioExibir = null;
     protected static int id;
     private String nome;
     private float altura;
@@ -14,10 +20,10 @@ public class Usuario {
     private boolean admin;
     private int exercicioID;
 
-    
     Conexao con = new Conexao("root", "RootAdmin123");
 
-    public Usuario(int id, String nome, float altura, int idade, float peso, int frequencia, String genero, boolean admin, int exercicioID) {
+    public Usuario(int id, String nome, float altura, int idade, float peso, int frequencia, String genero,
+            boolean admin, int exercicioID) {
         this.id = id;
         this.nome = nome;
         this.altura = altura;
@@ -51,18 +57,58 @@ public class Usuario {
         }
     }
 
-    public void DadosUsuarioExibir(Connection connection) throws SQLException {
-        System.out.println("Ola " + this.nome + ", seja bem vindo ao seu perfil!");
-        System.out.println("Seu IMC é: " + this.calcularIMC());
-        System.out.println("Seu gasto calórico basal é: " + this.calcularGastoCaloricoBasal());
-        System.out.println("O tempo de Atividade Recomendada para sua idade é: " + this.calcularTempoAtividadeRecomendada());
+    public void exibirInformacoesUsuario(Connection connection) throws SQLException {
+        JFrame frame = new JFrame("Informações do Usuário");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 300);
+        frame.setLayout(null);
+
+        JLabel labelNome = new JLabel("Nome: " + this.nome);
+        labelNome.setBounds(20, 20, 300, 20);
+        frame.add(labelNome);
+
+        JLabel labelIMC = new JLabel("IMC: " + this.calcularIMC());
+        labelIMC.setBounds(20, 50, 300, 20);
+        frame.add(labelIMC);
+
+        JLabel labelGastoCaloricoBasal = new JLabel("Gasto Calórico Basal: " + this.calcularGastoCaloricoBasal());
+        labelGastoCaloricoBasal.setBounds(20, 80, 300, 20);
+        frame.add(labelGastoCaloricoBasal);
+
+        JLabel labelTempoAtividadeRecomendada = new JLabel(
+                "Tempo de Atividade Recomendada: " + this.calcularTempoAtividadeRecomendada());
+        labelTempoAtividadeRecomendada.setBounds(20, 110, 300, 20);
+        frame.add(labelTempoAtividadeRecomendada);
+
         if (this.frequencia == 0) {
-            System.out.println("Você não está fazendo nenhum exercício no momento.");
+            JLabel labelSemExercicio = new JLabel("Você não está fazendo nenhum exercício no momento.");
+            labelSemExercicio.setBounds(20, 140, 300, 20);
+            frame.add(labelSemExercicio);
         } else {
-            System.out.println("Você está fazendo " + this.frequencia + " vezes por semana.");
-            System.out.println("Seu exercício atual é: " + this.exercicioAtual(connection));
-            System.out.println("Voce deve fazer pelo menos" + this.calcularTempoExercicio() + " minutos de exercício por dia.");
+            JLabel labelFrequencia = new JLabel("Frequência: " + this.frequencia + " vezes por semana");
+            labelFrequencia.setBounds(20, 140, 300, 20);
+            frame.add(labelFrequencia);
+
+            JLabel labelExercicioAtual = new JLabel("Exercício Atual: " + this.exercicioAtual(connection));
+            labelExercicioAtual.setBounds(20, 170, 300, 20);
+            frame.add(labelExercicioAtual);
+
+            JLabel labelTempoExercicio = new JLabel(
+                    "Tempo de Exercício: " + this.calcularTempoExercicio() + " minutos por dia");
+            labelTempoExercicio.setBounds(20, 200, 300, 20);
+            frame.add(labelTempoExercicio);
         }
+
+        JButton closeButton = new JButton("Close");
+        closeButton.setBounds(150, 230, 100, 30);
+        closeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+            }
+        });
+        frame.add(closeButton);
+
+        frame.setVisible(true);
     }
 
     private String calcularTempoExercicio() {
@@ -166,8 +212,6 @@ public class Usuario {
             }
         }
     }
-
-    
 
     public void exibirDados(Connection connection) throws SQLException {
         String sql = "SELECT * FROM usuario WHERE userID = ?";
@@ -404,6 +448,5 @@ public class Usuario {
             }
         }
     }
-    
-}
 
+}

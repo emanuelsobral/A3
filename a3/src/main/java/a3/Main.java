@@ -1,146 +1,201 @@
 package a3;
 
-import java.sql.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        // Import Class Connection
         Conexao con = new Conexao("root", "RootAdmin123");
 
-        Scanner sc = new Scanner(System.in);
+        JFrame frame = new JFrame("Login");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300, 200);
+        frame.setLayout(new FlowLayout());
 
-        // import Metodo para conectar com o banco de dados
-        try (Connection connection = con.conectar()) {
-            System.out.println("Conexao com o banco de dados estabelecida.");
-            System.out.println("Escolha uma opcao: ");
-            System.out.println("1 - Fazer login");
-            System.out.println("2 - Fazer cadastro");
-            int opcao = sc.nextInt();
-            sc.nextLine(); // consumir a quebra de linha
-            switch (opcao) {
-                case 1:
-                    fazerLogin(connection, sc);
-                    break;
-                case 2:
-                    Cadastro.fazerCadastro(connection, sc);
-                    break;
-                default:
-                    System.out.println("Opcao invalida.");
-                    break;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            sc.close();
-        }
-    }
+        JLabel emailLabel = new JLabel("Email:");
+        JLabel senhaLabel = new JLabel("Senha:");
 
-    private static void fazerLogin(Connection connection, Scanner sc) throws SQLException {
-        System.out.print("Digite seu email: ");
-        String email = sc.nextLine();
-        System.out.print("Digite sua senha: ");
-        String senha = sc.nextLine();
+        JTextField emailField = new JTextField(20);
+        JPasswordField senhaField = new JPasswordField(20);
 
-        Login login = new Login(email, senha);
-        Usuario usuario = login.fazerLogin(connection);
+        JButton loginButton = new JButton("Login");
 
-        if (usuario != null) {
-            System.out.println("Login efetuado com sucesso.");
-            if (usuario instanceof Admin) {
-                System.out.println("Você é um administrador.");
-                System.out.println("Escolha uma opcao: ");
-                System.out.println("1 - Exibir Todos os Usuarios");
-                System.out.println("2 - Deletar Usuario");
-                System.out.println("3 - Alterar Usuario");
-                System.out.println("4 - Cadastratrar Usuario");
-                System.out.println("5 - cadastrar Admin");
-                System.out.println("6 - Alterar Exercicio ou Cadastrar Exercicio");
-                System.out.println("7 - Alterar Exercicio do Usuario");
-                System.out.println("8 - Mostrar Todos os Exercicios");
-                int opcaoAdmin = sc.nextInt();
+        JButton registerButton = new JButton("Se cadastrar");
 
-                switch (opcaoAdmin) {
-                    case 1:
-                        Admin.exibirTodosUsuarios(connection);
-                        break;
-                    case 2:
-                        Admin.deletarUsuario(connection, sc);
-                        break;
-                    case 3:
-                        Admin.alterarUsuario(connection, sc);
-                        break;
-                    case 4:
-                        Admin.cadastrarUsuario(connection, sc);
-                        break;
-                    case 5:
-                        Admin.cadastrarAdmin(connection, sc);
-                        break;
-                    case 6:
-                        Admin.alterarExercicio(connection, sc);
-                        break;
-                    case 7:
-                        Admin.AlterarExercicioDoUsuario(connection, sc);
-                        break;
-                    case 8:
-                        Admin.mostratTodosExercicios(connection);
-                        break;
-                    default:
-                        System.out.println("Opcao invalida.");
-                        break;
-                }
-            } else {
-                int opcaoUsuario;
-                do {
-                    clearConsole();
+        frame.add(emailLabel);
+        frame.add(emailField);
+        frame.add(senhaLabel);
+        frame.add(senhaField);
+        frame.add(loginButton);
+        frame.add(registerButton);
 
-                    System.out.println("Você é um usuario.");
-                    usuario.DadosUsuarioExibir(connection);
-                    System.out.println("Escolha uma opcao: ");
-                    System.out.println("0 - Selecionar um Exercicio");
-                    System.out.println("1 - Exibir Dados");
-                    System.out.println("2 - Alterar Dados");
-                    System.out.println("3 - Deletar Conta");
-                    System.out.println("9 - Sair");
-                    opcaoUsuario = sc.nextInt();
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String email = emailField.getText();
+                String senha = new String(senhaField.getPassword());
 
-                    switch (opcaoUsuario) {
-                        case 0:
-                            usuario.selecionarExercicio(connection, sc);
-                            break;
-                        case 1:
-                            usuario.exibirDados(connection);
-                            break;
-                        case 2:
-                            usuario.alterarDados(connection);
-                            break;
-                        case 3:
-                            usuario.deletarConta(connection, sc);
-                            break;
-                        case 9:
-                            System.out.println("Saindo...");
-                            break;
-                        default:
-                            System.out.println("Opcao invalida.");
-                            break;
+                try (Connection connection = con.conectar()) {
+                    Login login = new Login(email, senha);
+                    Usuario usuario = login.fazerLogin(connection);
+
+                    if (usuario != null) {
+                        JOptionPane.showMessageDialog(null, "Login efetuado com sucesso.");
+
+                        if (usuario instanceof Admin) {
+                            String[] adminOptions = {"Exibir Todos os Usuarios", "Deletar Usuario", "Alterar Usuario", "Cadastrar Usuario", "Cadastrar Admin", "Alterar Exercicio ou Cadastrar Exercicio", "Alterar Exercicio do Usuario", "Mostrar Todos os Exercicios"};
+                            JPanel adminPanel = new JPanel();
+                            adminPanel.setLayout(new BoxLayout(adminPanel, BoxLayout.Y_AXIS));
+
+                            for (String option : adminOptions) {
+                                JButton button = new JButton(option);
+                                adminPanel.add(button);
+                                button.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        switch (option) {
+                                            case "Exibir Todos os Usuarios":
+                                                try {
+                                                    Admin.exibirTodosUsuarios(connection);
+                                                } catch (SQLException e1) {
+                                                    e1.printStackTrace();
+                                                }
+                                                break;
+                                            case "Deletar Usuario":
+                                                try {
+                                                    Admin.deletarUsuario(connection, new Scanner(System.in));
+                                                } catch (SQLException e1) {
+                                                    e1.printStackTrace();
+                                                }
+                                                break;
+                                            case "Alterar Usuario":
+                                                try {
+                                                    Admin.alterarUsuario(connection, new Scanner(System.in));
+                                                } catch (SQLException e1) {
+                                                    e1.printStackTrace();
+                                                }
+                                                break;
+                                            case "Cadastrar Usuario":
+                                                try {
+                                                    Admin.cadastrarUsuario(connection, new Scanner(System.in));
+                                                } catch (SQLException e1) {
+                                                    e1.printStackTrace();
+                                                }
+                                                break;
+                                            case "Cadastrar Admin":
+                                                try {
+                                                    Admin.cadastrarAdmin(connection, new Scanner(System.in));
+                                                } catch (SQLException e1) {
+                                                    e1.printStackTrace();
+                                                }
+                                                break;
+                                            case "Alterar Exercicio ou Cadastrar Exercicio":
+                                                try {
+                                                    Admin.alterarExercicio(connection, new Scanner(System.in));
+                                                } catch (SQLException e1) {
+                                                    e1.printStackTrace();
+                                                }
+                                                break;
+                                            case "Alterar Exercicio do Usuario":
+                                                try {
+                                                    Admin.AlterarExercicioDoUsuario(connection, new Scanner(System.in));
+                                                } catch (SQLException e1) {
+                                                    e1.printStackTrace();
+                                                }
+                                                break;
+                                            case "Mostrar Todos os Exercicios":
+                                                try {
+                                                    Admin.mostratTodosExercicios(connection);
+                                                } catch (SQLException e1) {
+                                                    e1.printStackTrace();
+                                                }
+                                                break;
+                                            default:
+                                                JOptionPane.showMessageDialog(null, "Opcao invalida.");
+                                                break;
+                                        }
+                                    }
+                                });
+                            }
+
+                            JOptionPane.showMessageDialog(null, adminPanel, "Admin Options", JOptionPane.PLAIN_MESSAGE);
+                        } else {
+                            String[] userOptions = {"Selecionar um Exercicio", "Exibir Dados", "Alterar Dados", "Deletar Conta"};
+                            JPanel userPanel = new JPanel();
+                            userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.Y_AXIS));
+
+                            for (String option : userOptions) {
+                                JButton button = new JButton(option);
+                                userPanel.add(button);
+                                button.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        switch (option) {
+                                            case "Selecionar um Exercicio":
+                                                try {
+                                                    usuario.selecionarExercicio(connection, new Scanner(System.in));
+                                                } catch (SQLException e1) {
+                                                    e1.printStackTrace();
+                                                }
+                                                break;
+                                            case "Exibir Dados":
+                                                try {
+                                                    usuario.exibirInformacoesUsuario(connection);
+                                                } catch (SQLException e1) {
+                                                    e1.printStackTrace();
+                                                }
+                                                break;
+                                            case "Alterar Dados":
+                                                try {
+                                                    usuario.alterarDados(connection);
+                                                } catch (SQLException e1) {
+                                                    e1.printStackTrace();
+                                                }
+                                                break;
+                                            case "Deletar Conta":
+                                                try {
+                                                    usuario.deletarConta(connection, new Scanner(System.in));
+                                                } catch (SQLException e1) {
+                                                    e1.printStackTrace();
+                                                }
+                                                break;
+                                            default:
+                                                JOptionPane.showMessageDialog(null, "Opcao invalida.");
+                                                break;
+                                        }
+                                    }
+                                });
+                            }
+
+                            JOptionPane.showMessageDialog(null, userPanel, "User Options", JOptionPane.PLAIN_MESSAGE);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Email ou senha incorretos.");
                     }
-                } while (opcaoUsuario != 9);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
-        } else {
-            System.out.println("Email ou senha incorretos.");
-        }
-    }
+        });
 
-    public static void clearConsole() {
-        try {
-            if (System.getProperty("os.name").contains("Windows")) {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            } else {
-                Runtime.getRuntime().exec("clear");
+        registerButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                try (Connection connection = con.conectar()) {
+                    Cadastro.fazerCadastro(connection);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            
+            
+        });
+            frame.setVisible(true);
     }
 }
-

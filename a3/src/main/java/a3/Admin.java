@@ -49,6 +49,7 @@ public class Admin extends Usuario {
         }
 
     }
+    
 
     public static void cadastrarAdmin(Connection connection, Scanner sc) throws SQLException {
         System.out.print("Digite seu nome: ");
