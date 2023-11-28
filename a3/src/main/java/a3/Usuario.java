@@ -12,6 +12,7 @@ import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.JComboBox;
 
 public class Usuario {
     protected static final Object DadosUsuarioExibir = null;
@@ -334,67 +335,61 @@ public class Usuario {
         }
     }
 
+
     public static void alterarDados(Connection connection) throws SQLException {
         String sql = "SELECT * FROM usuario WHERE userID = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    System.out.println("Usuario encontrado.");
-                    int opcaoAlterar;
-                    do {
-                        Scanner sc = new Scanner(System.in);
-                        System.out.println("Escolha qual informacao voce quer alterar: ");
-                        System.out.println("1 - Nome");
-                        System.out.println("2 - Email");
-                        System.out.println("3 - Senha");
-                        System.out.println("4 - Altura");
-                        System.out.println("5 - Idade");
-                        System.out.println("6 - Peso");
-                        System.out.println("7 - Frequencia");
-                        System.out.println("8 - Genero");
-                        System.out.println("0 - Sair");
-                        opcaoAlterar = sc.nextInt();
-                        sc.nextLine(); // consumir a quebra de linha
+                    String[] options = { "Nome", "Email", "Senha", "Altura", "Idade", "Peso", "Frequencia", "Genero", "Sair" };
+                    JComboBox<String> comboBox = new JComboBox<>(options);
+                    int result = JOptionPane.showConfirmDialog(null, comboBox, "Escolha qual informacao voce quer alterar:",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                    if (result == JOptionPane.OK_OPTION) {
+                        int opcaoAlterar = comboBox.getSelectedIndex();
                         switch (opcaoAlterar) {
+                            case 0:
+                                alterarNome(connection, new Scanner(System.in), id);
+                                break;
                             case 1:
-                                alterarNome(connection, sc, id);
+                                alterarEmail(connection, new Scanner(System.in), id);
                                 break;
                             case 2:
-                                alterarEmail(connection, sc, id);
+                                alterarSenha(connection, new Scanner(System.in), id);
                                 break;
                             case 3:
-                                alterarSenha(connection, sc, id);
+                                alterarAltura(connection, new Scanner(System.in), id);
                                 break;
                             case 4:
-                                alterarAltura(connection, sc, id);
+                                alterarIdade(connection, new Scanner(System.in), id);
                                 break;
                             case 5:
-                                alterarIdade(connection, sc, id);
+                                alterarPeso(connection, new Scanner(System.in), id);
                                 break;
                             case 6:
-                                alterarPeso(connection, sc, id);
+                                alterarFrequencia(connection, new Scanner(System.in), id);
                                 break;
                             case 7:
-                                alterarFrequencia(connection, sc, id);
+                                alterarGenero(connection, new Scanner(System.in), id);
                                 break;
                             case 8:
-                                alterarGenero(connection, sc, id);
-                                break;
-                            case 0:
-                                System.out.println("Saindo do modo de alteracao.");
+                                JOptionPane.showMessageDialog(null, "Saindo do modo de alteracao.");
                                 break;
                             default:
-                                System.out.println("Opcao invalida.");
+                                JOptionPane.showMessageDialog(null, "Opcao invalida.");
                                 break;
                         }
-                    } while (opcaoAlterar != 0);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Operacao cancelada.");
+                    }
                 } else {
-                    System.out.println("Nao existe usuario com esse ID.");
+                    JOptionPane.showMessageDialog(null, "Nao existe usuario com esse ID.");
                 }
             }
         }
     }
+
 
     private static void alterarNome(Connection connection, Scanner sc, int id) throws SQLException {
         System.out.print("Digite o novo nome: ");
