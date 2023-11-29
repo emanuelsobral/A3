@@ -66,13 +66,22 @@ public class Usuario {
 
     public class UserInterface extends JFrame {
         public UserInterface(Connection connection) {
-            setTitle("User Options");
+            setTitle("FitWeek");
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setSize(400, 300);
             setLayout(new BorderLayout());
 
+            setLocationRelativeTo(null);
+
             JPanel buttonPanel = new JPanel();
-            buttonPanel.setLayout(new GridLayout(4, 1));
+            buttonPanel.setLayout(new GridLayout(6, 1));
+
+            // Add titleLabel text field
+            JLabel tituloLabel = new JLabel("FitWeek");
+            tituloLabel.setHorizontalAlignment(JLabel.CENTER);
+            tituloLabel.setFont(new Font("Arial", Font.BOLD, 24));
+            tituloLabel.setForeground(new Color(128, 0, 128)); 
+            buttonPanel.add(tituloLabel);
 
             JButton displayDataButton = new JButton("Exibir Dados");
             displayDataButton.addActionListener(new ActionListener() {
@@ -126,9 +135,17 @@ public class Usuario {
             });
             buttonPanel.add(deleteAccountButton);
 
+            JButton exitButton = new JButton("Sair");
+            exitButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(0);
+                }
+            });
+            buttonPanel.add(exitButton);
+
             add(buttonPanel, BorderLayout.CENTER);
         }
-
     }
 
     public static void exibirInformacoesUsuario(Connection connection) throws SQLException {
@@ -137,38 +154,36 @@ public class Usuario {
         frame.setSize(400, 300);
         frame.setLayout(null);
 
-        JLabel labelNome = new JLabel("Nome: " + nome);
+        JLabel labelNome = new JLabel("<html><font color=\"purple\">Nome: </font>" + nome + "</html>");
         labelNome.setBounds(20, 20, 300, 20);
         frame.add(labelNome);
 
-        JLabel labelIMC = new JLabel("IMC: " + calcularIMC());
+        JLabel labelIMC = new JLabel("<html><font color=\"purple\">IMC: </font>" + calcularIMC() + "</html>");
         labelIMC.setBounds(20, 50, 300, 20);
         frame.add(labelIMC);
 
-        JLabel labelGastoCaloricoBasal = new JLabel("Gasto Calórico Basal: " + calcularGastoCaloricoBasal());
+        JLabel labelGastoCaloricoBasal = new JLabel("<html><font color=\"purple\">Gasto Calórico Basal: </font>" + calcularGastoCaloricoBasal() + "</html>");
         labelGastoCaloricoBasal.setBounds(20, 80, 300, 20);
         frame.add(labelGastoCaloricoBasal);
 
-        JLabel labelTempoAtividadeRecomendada = new JLabel(
-                "Tempo de Atividade Recomendada: " + calcularTempoAtividadeRecomendada());
+        JLabel labelTempoAtividadeRecomendada = new JLabel("<html><font color=\"purple\">Tempo de Atividade Recomendada: </font>" + calcularTempoAtividadeRecomendada() + "</html>");
         labelTempoAtividadeRecomendada.setBounds(20, 110, 300, 20);
         frame.add(labelTempoAtividadeRecomendada);
 
         if (frequencia == 0) {
-            JLabel labelSemExercicio = new JLabel("Você não está fazendo nenhum exercício no momento.");
+            JLabel labelSemExercicio = new JLabel("<html><font color=\"purple\">Você não está fazendo nenhum exercício no momento.</font></html>");
             labelSemExercicio.setBounds(20, 140, 400, 20);
             frame.add(labelSemExercicio);
         } else {
-            JLabel labelFrequencia = new JLabel("Frequência: " + frequencia + " vezes por semana");
+            JLabel labelFrequencia = new JLabel("<html><font color=\"purple\">Frequência: </font>" + frequencia + " vezes por semana</html>");
             labelFrequencia.setBounds(20, 140, 300, 20);
             frame.add(labelFrequencia);
 
-            JLabel labelExercicioAtual = new JLabel("Exercício Atual: " + exercicioAtual(connection));
+            JLabel labelExercicioAtual = new JLabel("<html><font color=\"purple\">Exercício Atual: </font>" + exercicioAtual(connection) + "</html>");
             labelExercicioAtual.setBounds(20, 170, 300, 20);
             frame.add(labelExercicioAtual);
 
-            JLabel labelTempoExercicio = new JLabel(
-                    "Tempo de Exercício: " + calcularTempoExercicio() + " minutos por dia");
+            JLabel labelTempoExercicio = new JLabel("<html><font color=\"purple\">Tempo de Exercício: </font>" + calcularTempoExercicio() + " minutos por dia</html>");
             labelTempoExercicio.setBounds(20, 200, 300, 20);
             frame.add(labelTempoExercicio);
         }
@@ -181,6 +196,8 @@ public class Usuario {
             }
         });
         frame.add(closeButton);
+
+        frame.setLocationRelativeTo(null);
 
         frame.setVisible(true);
     }
@@ -248,9 +265,11 @@ public class Usuario {
 
         public static void selecionarExercicio(Connection connection) throws SQLException {
             JFrame frame = new JFrame("Selecionar Exercício");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setSize(400, 300);
             frame.setLayout(new BorderLayout());
+
+            frame.setLocationRelativeTo(null);
 
             JPanel panel = new JPanel();
             panel.setLayout(new GridLayout(4, 2));
@@ -458,6 +477,8 @@ public class Usuario {
         frame.add(nomeField);
         frame.add(alterarButton);
 
+        frame.setLocationRelativeTo(null);
+
         frame.setVisible(true);
     }
 
@@ -494,6 +515,8 @@ public class Usuario {
         frame.add(emailLabel);
         frame.add(emailField);
         frame.add(alterarButton);
+
+        frame.setLocationRelativeTo(null);
 
         frame.setVisible(true);
     }
@@ -533,6 +556,8 @@ public class Usuario {
         frame.add(senhaField);
         frame.add(alterarButton);
 
+        frame.setLocationRelativeTo(null);
+
         frame.setVisible(true);
     }
 
@@ -569,6 +594,8 @@ public class Usuario {
         frame.add(alturaLabel);
         frame.add(alturaField);
         frame.add(alterarButton);
+
+        frame.setLocationRelativeTo(null);
 
         frame.setVisible(true);
     }
@@ -607,6 +634,8 @@ public class Usuario {
         frame.add(idadeField);
         frame.add(alterarButton);
 
+        frame.setLocationRelativeTo(null);
+
         frame.setVisible(true);
     }
 
@@ -643,6 +672,8 @@ public class Usuario {
         frame.add(pesoLabel);
         frame.add(pesoField);
         frame.add(alterarButton);
+
+        frame.setLocationRelativeTo(null);
 
         frame.setVisible(true);
     }
@@ -681,6 +712,8 @@ public class Usuario {
         frame.add(frequenciaField);
         frame.add(alterarButton);
 
+        frame.setLocationRelativeTo(null);
+
         frame.setVisible(true);
     }
 
@@ -718,6 +751,8 @@ public class Usuario {
         frame.add(generoLabel);
         frame.add(generoComboBox);
         frame.add(alterarButton);
+
+        frame.setLocationRelativeTo(null);
 
         frame.setVisible(true);
     }

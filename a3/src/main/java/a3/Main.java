@@ -17,7 +17,15 @@ public class Main {
         JFrame frame = new JFrame("Login");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 200);
-        frame.setLayout(new FlowLayout());
+        frame.setLocationRelativeTo(null);
+        frame.setLayout(new BorderLayout());
+
+        JPanel panel = new JPanel(new GridLayout(4, 2));
+
+        JLabel tituloLabel = new JLabel("FitWeek");
+        tituloLabel.setHorizontalAlignment(JLabel.CENTER);
+        tituloLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        tituloLabel.setForeground(new Color(128, 0, 128)); 
 
         JLabel emailLabel = new JLabel("Email:");
         JLabel senhaLabel = new JLabel("Senha:");
@@ -26,15 +34,18 @@ public class Main {
         JPasswordField senhaField = new JPasswordField(20);
 
         JButton loginButton = new JButton("Login");
-
         JButton registerButton = new JButton("Se cadastrar");
 
-        frame.add(emailLabel);
-        frame.add(emailField);
-        frame.add(senhaLabel);
-        frame.add(senhaField);
-        frame.add(loginButton);
-        frame.add(registerButton);
+        panel.add(tituloLabel);
+        panel.add(new JLabel());
+        panel.add(emailLabel);
+        panel.add(emailField);
+        panel.add(senhaLabel);
+        panel.add(senhaField);
+        panel.add(loginButton);
+        panel.add(registerButton);
+
+        frame.add(panel, BorderLayout.CENTER);
 
         loginButton.addActionListener(new ActionListener() {
             @Override
