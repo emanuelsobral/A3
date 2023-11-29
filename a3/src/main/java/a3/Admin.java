@@ -6,7 +6,6 @@ import java.util.Scanner;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.table.DefaultTableModel;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -270,7 +269,7 @@ public class Admin extends Usuario {
 
     public static void alterarUsuario(Connection connection, Scanner sc) throws SQLException {
             JFrame frame = new JFrame("Alterar Usuário");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setSize(400, 300);
             frame.setLayout(new BorderLayout());
 
@@ -369,6 +368,8 @@ public class Admin extends Usuario {
             frame.add(panel, BorderLayout.CENTER);
             frame.add(alterarButton, BorderLayout.SOUTH);
 
+            frame.setLocationRelativeTo(null);
+
             frame.setVisible(true);
         }
 
@@ -417,7 +418,7 @@ public class Admin extends Usuario {
 
 private static void alterarNome(Connection connection, Scanner sc, int id) throws SQLException {
             JFrame frame = new JFrame("Alterar Nome do Usuário");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setSize(300, 200);
             frame.setLayout(new FlowLayout());
 
@@ -449,12 +450,14 @@ private static void alterarNome(Connection connection, Scanner sc, int id) throw
             frame.add(novoNomeField);
             frame.add(alterarButton);
 
+            frame.setLocationRelativeTo(null);
+
             frame.setVisible(true);
         }
 
 private static void alterarEmail(Connection connection, Scanner sc, int id) throws SQLException {
             JFrame frame = new JFrame("Alterar Email do Usuário");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setSize(300, 200);
             frame.setLayout(new FlowLayout());
 
@@ -486,12 +489,14 @@ private static void alterarEmail(Connection connection, Scanner sc, int id) thro
             frame.add(novoEmailField);
             frame.add(alterarButton);
 
+            frame.setLocationRelativeTo(null);
+
             frame.setVisible(true);
         }
 
  private static void alterarSenha(Connection connection, Scanner sc, int id) throws SQLException {
             JFrame frame = new JFrame("Alterar Senha do Usuário");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setSize(300, 200);
             frame.setLayout(new FlowLayout());
 
@@ -524,12 +529,14 @@ private static void alterarEmail(Connection connection, Scanner sc, int id) thro
             frame.add(novaSenhaField);
             frame.add(alterarButton);
 
+            frame.setLocationRelativeTo(null);
+
             frame.setVisible(true);
         }
 
     private static void alterarAltura(Connection connection, Scanner sc, int id) throws SQLException {
             JFrame frame = new JFrame("Alterar Altura do Usuário");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setSize(300, 200);
             frame.setLayout(new FlowLayout());
 
@@ -562,12 +569,14 @@ private static void alterarEmail(Connection connection, Scanner sc, int id) thro
             frame.add(novaAlturaField);
             frame.add(alterarButton);
 
+            frame.setLocationRelativeTo(null);
+
             frame.setVisible(true);
         }
         
     private static void alterarIdade(Connection connection, Scanner sc, int id) throws SQLException {
             JFrame frame = new JFrame("Alterar Idade do Usuário");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setSize(300, 200);
             frame.setLayout(new FlowLayout());
 
@@ -600,12 +609,14 @@ private static void alterarEmail(Connection connection, Scanner sc, int id) thro
             frame.add(novaIdadeField);
             frame.add(alterarButton);
 
+            frame.setLocationRelativeTo(null);
+
             frame.setVisible(true);
         }
 
     private static void alterarPeso(Connection connection, Scanner sc, int id) throws SQLException {
         JFrame frame = new JFrame("Alterar Peso do Usuário");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(300, 200);
         frame.setLayout(new FlowLayout());
 
@@ -638,12 +649,14 @@ private static void alterarEmail(Connection connection, Scanner sc, int id) thro
         frame.add(novoPesoField);
         frame.add(alterarButton);
 
+        frame.setLocationRelativeTo(null);
+
         frame.setVisible(true);
     }
 
     private static void alterarFrequencia(Connection connection, Scanner sc, int id) throws SQLException {
             JFrame frame = new JFrame("Alterar Frequência Semanal de Exercícios");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setSize(300, 200);
             frame.setLayout(new FlowLayout());
 
@@ -675,12 +688,14 @@ private static void alterarEmail(Connection connection, Scanner sc, int id) thro
             frame.add(novaFrequenciaField);
             frame.add(alterarButton);
 
+            frame.setLocationRelativeTo(null);
+
             frame.setVisible(true);
         }
 
 private static void alterarGenero(Connection connection, Scanner sc, int id) throws SQLException {
             JFrame frame = new JFrame("Alterar Gênero");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setSize(300, 200);
             frame.setLayout(new FlowLayout());
 
@@ -712,12 +727,14 @@ private static void alterarGenero(Connection connection, Scanner sc, int id) thr
             frame.add(novoGeneroField);
             frame.add(alterarButton);
 
+            frame.setLocationRelativeTo(null);
+
             frame.setVisible(true);
         }
 
     private static void alterarAdmin(Connection connection, Scanner sc, int id) throws SQLException {
         JFrame frame = new JFrame("Alterar Status de Admin");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(300, 200);
         frame.setLayout(new FlowLayout());
 
@@ -753,6 +770,8 @@ private static void alterarGenero(Connection connection, Scanner sc, int id) thr
         frame.add(novoStatusLabel);
         frame.add(novoStatusField);
         frame.add(alterarButton);
+
+        frame.setLocationRelativeTo(null);
 
         frame.setVisible(true);
     }
