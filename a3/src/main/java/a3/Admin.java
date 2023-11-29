@@ -542,12 +542,20 @@ public class Admin extends Usuario {
     }
 
     static void alterarExercicio(Connection connection, Scanner sc) throws SQLException {
-        JFrame frame = new JFrame("Admin");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setLayout(new FlowLayout());
-
         String[] options = { "Cadastrar Exercicio", "Alterar Nome", "Alterar Intensidade", "Alterar MET" };
         JComboBox<String> dropdown = new JComboBox<>(options);
+
+        // Create a JPanel with FlowLayout and set alignment to center
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panel.add(dropdown);
+
+        // Set the preferred size of the dropdown
+        dropdown.setPreferredSize(new Dimension(200, dropdown.getPreferredSize().height));
+
+        JFrame frame = new JFrame("Admin");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.getContentPane().add(panel);
+
         dropdown.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -577,7 +585,7 @@ public class Admin extends Usuario {
         });
 
         frame.add(dropdown);
-        frame.setSize(400, 300);
+        frame.setSize(400, 100);
         frame.setVisible(true);
     }
 
