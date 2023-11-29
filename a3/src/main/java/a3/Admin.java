@@ -110,7 +110,7 @@ public class Admin extends Usuario {
     public static void cadastrarAdmin(Connection connection) {
         JFrame frame = new JFrame("Cadastro de Administrador");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(10, 2));
+        frame.setLayout(new GridLayout(11, 2));
 
         JLabel nameLabel = new JLabel("Nome:");
         JTextField nameField = new JTextField();
@@ -126,6 +126,11 @@ public class Admin extends Usuario {
         JPasswordField senhaField = new JPasswordField();
         frame.add(senhaLabel);
         frame.add(senhaField);
+
+        JLabel senhaVerifLabel = new JLabel("Digite a senha novamente:");
+        JPasswordField senhaVerifField = new JPasswordField();
+        frame.add(senhaVerifLabel);
+        frame.add(senhaVerifField);
 
         JLabel alturaLabel = new JLabel("Altura (metros):");
         JTextField alturaField = new JTextField();
@@ -167,12 +172,18 @@ public class Admin extends Usuario {
                 String nome = nameField.getText();
                 String email = emailField.getText();
                 String senha = new String(senhaField.getPassword());
+                String senhaVerif = new String(senhaVerifField.getPassword());
                 float altura = Float.parseFloat(alturaField.getText());
                 int idade = Integer.parseInt(idadeField.getText());
                 float peso = Float.parseFloat(pesoField.getText());
                 int frequencia = Integer.parseInt((String) frequenciaComboBox.getSelectedItem());
                 String genero = (String) generoComboBox.getSelectedItem();
                 boolean admin = ((String) adminComboBox.getSelectedItem()).equalsIgnoreCase("S");
+
+                if (!senha.equals(senhaVerif)) {
+                    JOptionPane.showMessageDialog(frame, "As senhas não coincidem. Por favor, tente novamente.");
+                    return;
+                }
 
                 String sql = "INSERT INTO usuario (nome, email, senha, altura, idade, peso, frequencia, genero, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
@@ -210,7 +221,6 @@ public class Admin extends Usuario {
         frame.setVisible(true);
 
         frame.setLocationRelativeTo(null);
-
     }
 
     public static void exibirTodosUsuarios(Connection connection) throws SQLException {

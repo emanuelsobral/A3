@@ -150,7 +150,7 @@ public class Usuario {
 
     public static void exibirInformacoesUsuario(Connection connection) throws SQLException {
         JFrame frame = new JFrame("Informações do Usuário");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
         frame.setLayout(null);
 
@@ -193,19 +193,16 @@ public class Usuario {
         closeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                try {
-                    exibirInformacoesUsuario(connection);
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
             }
         });
+        
         frame.add(closeButton);
 
         frame.setLocationRelativeTo(null);
 
         frame.setVisible(true);
     }
+    
     private static String calcularTempoExercicio() {
         String sql = "SELECT * FROM exercicios WHERE exercicioID = ?";
         try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
