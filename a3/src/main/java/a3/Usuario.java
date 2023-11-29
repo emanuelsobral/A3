@@ -24,7 +24,7 @@ public class Usuario {
     private boolean admin;
     private static int exercicioID;
 
-    static Conexao con = new Conexao("root", "RootAdmin123");
+     static Conexao con = new Conexao("root", "RootAdmin123");
 
     public Usuario(int id, String nome, float altura, int idade, float peso, int frequencia, String genero,
             boolean admin, int exercicioID) {

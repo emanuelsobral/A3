@@ -2,69 +2,49 @@ package a3;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.*;
 import java.util.Scanner;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
+import javax.swing.*;
+import java.awt.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+
 
 public class Admin extends Usuario {
+
+    static Conexao con = new Conexao("root", "RootAdmin123");
+
     public Admin(int id, String nome, float altura, int idade, float peso, int frequencia, String genero) {
         super(id, nome, altura, idade, peso, frequencia, genero, true, frequencia);
     }
 
-    public static void cadastrarUsuario(Connection connection, Scanner sc) throws SQLException {
-        // implementar a lógica para cadastrar um novo usuário
-        System.out.print("Digite seu nome: ");
-        String nome = sc.nextLine();
-        System.out.print("Digite seu email: ");
-        String email = sc.nextLine();
-        System.out.print("Digite sua senha: ");
-        String senha = sc.nextLine();
-        System.out.print("Digite sua altura em metros: ");
-        float altura = sc.nextFloat();
-        System.out.print("Digite sua idade em anos: ");
-        int idade = sc.nextInt();
-        System.out.print("Digite seu peso em quilos: ");
-        float peso = sc.nextFloat();
-        System.out.print("Digite sua frequencia semanal de exercicios (0 a 7): ");
-        int frequencia = sc.nextInt();
-        sc.nextLine(); // consumir a quebra de linha
-        System.out.print("Digite seu genero (M ou F): ");
-        String genero = sc.nextLine();
-        boolean admin = false;
-
-        String sql = "INSERT INTO usuario (nome, email, senha, altura, idade, peso, frequencia, genero, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, nome);
-            statement.setString(2, email);
-            statement.setString(3, senha);
-            statement.setFloat(4, altura);
-            statement.setInt(5, idade);
-            statement.setFloat(6, peso);
-            statement.setInt(7, frequencia);
-            statement.setString(8, genero);
-            statement.setBoolean(9, admin);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Cadastro realizado com sucesso.");
-            } else {
-                System.out.println("Erro ao realizar cadastro.");
-            }
-        }
-
-    }
-    
     public static void showAdminOptions(Connection connection) {
-        String[] adminOptions = {"Exibir Todos os Usuarios", "Deletar Usuario", "Alterar Usuario", "Cadastrar Usuario", "Cadastrar Admin", "Alterar Exercicio ou Cadastrar Exercicio", "Alterar Exercicio do Usuario", "Mostrar Todos os Exercicios"};
-        JPanel adminPanel = new JPanel();
-        adminPanel.setLayout(new BoxLayout(adminPanel, BoxLayout.Y_AXIS));
+        String[] adminOptions = { "Exibir Todos os Usuarios", "Deletar Usuario", "Alterar Usuario",
+                "Cadastrar Usuario ou Cadastrar Admin",
+                "Alterar Exercicio ou Cadastrar Exercicio", "Alterar Exercicio do Usuario",
+                "Mostrar Todos os Exercicios" };
+
+        JFrame frame = new JFrame("FitWeek : ADMIN");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Set the title label properties
+        JLabel tituloLabel = new JLabel("FitWeek : ADMIN");
+        tituloLabel.setHorizontalAlignment(JLabel.CENTER);
+        tituloLabel.setForeground(Color.RED);
+        tituloLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        frame.add(tituloLabel);
+
+        frame.setLayout(new GridLayout(adminOptions.length + 1, 1));
+
+        tituloLabel.setHorizontalAlignment(JLabel.CENTER);
 
         for (String option : adminOptions) {
             JButton button = new JButton(option);
-            adminPanel.add(button);
+            frame.add(button);
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -90,19 +70,8 @@ public class Admin extends Usuario {
                                 e1.printStackTrace();
                             }
                             break;
-                        case "Cadastrar Usuario":
-                            try {
-                                Admin.cadastrarUsuario(connection, new Scanner(System.in));
-                            } catch (SQLException e1) {
-                                e1.printStackTrace();
-                            }
-                            break;
-                        case "Cadastrar Admin":
-                            try {
-                                Admin.cadastrarAdmin(connection, new Scanner(System.in));
-                            } catch (SQLException e1) {
-                                e1.printStackTrace();
-                            }
+                        case "Cadastrar Usuario ou Cadastrar Admin":
+                            Admin.cadastrarAdmin(connection);
                             break;
                         case "Alterar Exercicio ou Cadastrar Exercicio":
                             try {
@@ -130,92 +99,163 @@ public class Admin extends Usuario {
                             break;
                     }
                 }
-
             });
         }
-        JOptionPane.showMessageDialog(null, adminPanel, "Admin Options", JOptionPane.PLAIN_MESSAGE);
+
+        frame.setSize(400, 300);
+        frame.setVisible(true);
     }
 
-    public static void cadastrarAdmin(Connection connection, Scanner sc) throws SQLException {
-        System.out.print("Digite seu nome: ");
-        String nome = sc.nextLine();
-        System.out.print("Digite seu email: ");
-        String email = sc.nextLine();
-        System.out.print("Digite sua senha: ");
-        String senha = sc.nextLine();
-        System.out.print("Digite sua altura em metros: ");
-        float altura = sc.nextFloat();
-        System.out.print("Digite sua idade em anos: ");
-        int idade = sc.nextInt();
-        System.out.print("Digite seu peso em quilos: ");
-        float peso = sc.nextFloat();
-        System.out.print("Digite sua frequencia semanal de exercicios (0 a 7): ");
-        int frequencia = sc.nextInt();
-        sc.nextLine(); // consumir a quebra de linha
-        System.out.print("Digite seu genero (M ou F): ");
-        String genero = sc.nextLine();
-        System.out.print("Voce e um administrador? (S/N): ");
-        String resposta = sc.nextLine();
-        boolean admin = resposta.equalsIgnoreCase("S");
+    public static void cadastrarAdmin(Connection connection) {
+        JFrame frame = new JFrame("Cadastro de Administrador");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new GridLayout(10, 2));
 
-        String sql = "INSERT INTO usuario (nome, email, senha, altura, idade, peso, frequencia, genero, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, nome);
-            statement.setString(2, email);
-            statement.setString(3, senha);
-            statement.setFloat(4, altura);
-            statement.setInt(5, idade);
-            statement.setFloat(6, peso);
-            statement.setInt(7, frequencia);
-            statement.setString(8, genero);
-            statement.setBoolean(9, admin);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Cadastro realizado com sucesso.");
-            } else {
-                System.out.println("Erro ao realizar cadastro.");
+        JLabel nameLabel = new JLabel("Nome:");
+        JTextField nameField = new JTextField();
+        frame.add(nameLabel);
+        frame.add(nameField);
+
+        JLabel emailLabel = new JLabel("Email:");
+        JTextField emailField = new JTextField();
+        frame.add(emailLabel);
+        frame.add(emailField);
+
+        JLabel senhaLabel = new JLabel("Senha:");
+        JPasswordField senhaField = new JPasswordField();
+        frame.add(senhaLabel);
+        frame.add(senhaField);
+
+        JLabel alturaLabel = new JLabel("Altura (metros):");
+        JTextField alturaField = new JTextField();
+        frame.add(alturaLabel);
+        frame.add(alturaField);
+
+        JLabel idadeLabel = new JLabel("Idade (anos):");
+        JTextField idadeField = new JTextField();
+        frame.add(idadeLabel);
+        frame.add(idadeField);
+
+        JLabel pesoLabel = new JLabel("Peso (quilos):");
+        JTextField pesoField = new JTextField();
+        frame.add(pesoLabel);
+        frame.add(pesoField);
+
+        JLabel frequenciaLabel = new JLabel("Frequência semanal de exercícios (0 a 7):");
+        String[] frequenciaOptions = { "0", "1", "2", "3", "4", "5", "6", "7" };
+        JComboBox<String> frequenciaComboBox = new JComboBox<>(frequenciaOptions);
+        frame.add(frequenciaLabel);
+        frame.add(frequenciaComboBox);
+
+        JLabel generoLabel = new JLabel("Gênero:");
+        String[] generoOptions = { "M", "F" };
+        JComboBox<String> generoComboBox = new JComboBox<>(generoOptions);
+        frame.add(generoLabel);
+        frame.add(generoComboBox);
+
+        JLabel adminLabel = new JLabel("Administrador (S/N):");
+        String[] adminOptions = { "S", "N" };
+        JComboBox<String> adminComboBox = new JComboBox<>(adminOptions);
+        frame.add(adminLabel);
+        frame.add(adminComboBox);
+
+        JButton cadastrarButton = new JButton("Cadastrar");
+        cadastrarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nome = nameField.getText();
+                String email = emailField.getText();
+                String senha = new String(senhaField.getPassword());
+                float altura = Float.parseFloat(alturaField.getText());
+                int idade = Integer.parseInt(idadeField.getText());
+                float peso = Float.parseFloat(pesoField.getText());
+                int frequencia = Integer.parseInt((String) frequenciaComboBox.getSelectedItem());
+                String genero = (String) generoComboBox.getSelectedItem();
+                boolean admin = ((String) adminComboBox.getSelectedItem()).equalsIgnoreCase("S");
+
+                String sql = "INSERT INTO usuario (nome, email, senha, altura, idade, peso, frequencia, genero, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
+                    statement.setString(1, nome);
+                    statement.setString(2, email);
+                    statement.setString(3, senha);
+                    statement.setFloat(4, altura);
+                    statement.setInt(5, idade);
+                    statement.setFloat(6, peso);
+                    statement.setInt(7, frequencia);
+                    statement.setString(8, genero);
+                    statement.setBoolean(9, admin);
+                    int linhasAfetadas = statement.executeUpdate();
+                    if (linhasAfetadas > 0) {
+                        JOptionPane.showMessageDialog(frame, "Cadastro realizado com sucesso.");
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Erro ao realizar cadastro.");
+                    }
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(frame, "Erro ao realizar cadastro: " + ex.getMessage());
+                }
             }
-        }
+        });
+        JButton backButton = new JButton("Voltar");
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose(); 
+            }
+        });
+        frame.add(backButton);
+        frame.add(cadastrarButton);
+
+        frame.pack();
+        frame.setVisible(true);
     }
 
     public static void exibirTodosUsuarios(Connection connection) throws SQLException {
         System.out.println("Voce escolheu exibir todos os usuarios no banco de dados.");
-        String sql = "SELECT * FROM usuario";
-        try (Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(sql)) {
-            printResultSet(resultSet);
-        }
-    }
 
-    private static void printResultSet(ResultSet resultSet) throws SQLException {
-        ResultSetMetaData metaData = resultSet.getMetaData();
-        int columnCount = metaData.getColumnCount();
-        for (int i = 1; i <= columnCount; i++) {
-            System.out.printf("%-15s", metaData.getColumnName(i));
-        }
-        System.out.println();
-        while (resultSet.next()) {
+        JFrame frame = new JFrame("Lista de Usuários");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+
+        DefaultTableModel tableModel = new DefaultTableModel();
+        JTable table = new JTable(tableModel);
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
+
+        String sql = "SELECT * FROM usuario";
+        try (PreparedStatement statement = con.conectar().prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery(sql)) {
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
             for (int i = 1; i <= columnCount; i++) {
-                System.out.printf("%-15s", resultSet.getString(i));
+                tableModel.addColumn("<html><b>" + metaData.getColumnName(i) + "</b></html>");
             }
-            System.out.println();
+
+            while (resultSet.next()) {
+                Object[] rowData = new Object[columnCount];
+                for (int i = 1; i <= columnCount; i++) {
+                    rowData[i - 1] = resultSet.getString(i);
+                }
+                tableModel.addRow(rowData);
+            }
         }
+
+        frame.setSize(1200, 600);
+        frame.setVisible(true);
     }
 
     public static void deletarUsuario(Connection connection, Scanner sc) throws SQLException {
-        // implementar a lógica para deletar um usuário
         System.out.println("Voce escolheu deletar um usuario do banco de dados.");
-        System.out.print("Digite o ID do usuario que voce quer deletar: ");
-        int id = sc.nextInt();
-        sc.nextLine(); // consumir a quebra de linha
+        String idInput = JOptionPane.showInputDialog(null, "Digite o ID do usuario que voce quer deletar:");
+        int id = Integer.parseInt(idInput);
         String sql = "DELETE FROM usuario WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
             statement.setInt(1, id);
             int linhasAfetadas = statement.executeUpdate();
             if (linhasAfetadas > 0) {
-                System.out.println("Usuario deletado com sucesso.");
+                JOptionPane.showMessageDialog(null, "Usuario deletado com sucesso.");
             } else {
-                System.out.println("Nao existe usuario com esse ID.");
+                JOptionPane.showMessageDialog(null, "Nao existe usuario com esse ID.");
             }
         }
     }
@@ -292,24 +332,51 @@ public class Admin extends Usuario {
         }
     }
 
-    static void AlterarExercicioDoUsuario(Connection connection, Scanner sc) throws SQLException {
-        System.out.println("Digite o id do usuario que voce quer alterar: ");
-        int id = sc.nextInt();
-        System.out.print("Digite o id do exercicio que voce quer adicionar ao usuario: ");
-        int exercicioID = sc.nextInt();
-        sc.nextLine(); // consumir a quebra de linha
-        String sql = "UPDATE usuario SET exercicioID = ? WHERE userID = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, exercicioID);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0){
-                System.out.println("Exercicio adicionado com sucesso.");
-            } else {
-                System.out.println("Erro ao adicionar exercicio.");
-            }
+
+
+        static void AlterarExercicioDoUsuario(Connection connection, Scanner sc) throws SQLException {
+            JFrame frame = new JFrame("Alterar Exercício do Usuário");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(300, 200);
+            frame.setLayout(new FlowLayout());
+
+            JLabel userIdLabel = new JLabel("ID do Usuário:");
+            JTextField userIdField = new JTextField(10);
+            JLabel exercicioIdLabel = new JLabel("ID do Exercício:");
+            JTextField exercicioIdField = new JTextField(10);
+            JButton alterarButton = new JButton("Alterar");
+
+            alterarButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int id = Integer.parseInt(userIdField.getText());
+                    int exercicioID = Integer.parseInt(exercicioIdField.getText());
+
+                    String sql = "UPDATE usuario SET exercicioID = ? WHERE userID = ?";
+                    try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
+                        statement.setInt(1, exercicioID);
+                        statement.setInt(2, id);
+                        int linhasAfetadas = statement.executeUpdate();
+                        if (linhasAfetadas > 0) {
+                            JOptionPane.showMessageDialog(frame, "Exercício adicionado com sucesso.");
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Erro ao adicionar exercício.");
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            frame.add(userIdLabel);
+            frame.add(userIdField);
+            frame.add(exercicioIdLabel);
+            frame.add(exercicioIdField);
+            frame.add(alterarButton);
+
+            frame.setVisible(true);
         }
-    }
+
 
     private static void alterarNome(Connection connection, Scanner sc, int id) throws SQLException {
         System.out.print("Digite o novo nome: ");
@@ -510,8 +577,8 @@ public class Admin extends Usuario {
             default:
                 System.out.println("Opcao invalida.");
                 break;
-            }
         }
+    }
 
     private static void CadastraExercicio(Connection connection, Scanner sc) throws SQLException {
         System.out.print("Digite o nome do exercicio: ");
@@ -549,7 +616,7 @@ public class Admin extends Usuario {
             statement.setFloat(1, novoMET);
             statement.setInt(2, id);
             int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0){
+            if (linhasAfetadas > 0) {
                 System.out.println("MET alterado com sucesso.");
             } else {
                 System.out.println("Erro ao alterar MET.");
@@ -568,7 +635,7 @@ public class Admin extends Usuario {
             statement.setInt(1, novoFatorIntensidade);
             statement.setInt(2, id);
             int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0){
+            if (linhasAfetadas > 0) {
                 System.out.println("Fator de intensidade alterado com sucesso.");
             } else {
                 System.out.println("Erro ao alterar fator de intensidade.");
@@ -587,7 +654,7 @@ public class Admin extends Usuario {
             statement.setString(1, novaIntensidade);
             statement.setInt(2, id);
             int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0){
+            if (linhasAfetadas > 0) {
                 System.out.println("Intensidade alterada com sucesso.");
             } else {
                 System.out.println("Erro ao alterar intensidade.");
@@ -606,21 +673,49 @@ public class Admin extends Usuario {
             statement.setString(1, novoNomeExercicio);
             statement.setInt(2, id);
             int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0){
+            if (linhasAfetadas > 0) {
                 System.out.println("Nome do exercicio alterado com sucesso.");
             } else {
                 System.out.println("Erro ao alterar nome do exercicio.");
             }
         }
     }
-    static void mostratTodosExercicios(Connection connection) throws SQLException {
+
+    public static void mostratTodosExercicios(Connection connection) throws SQLException {
         System.out.println("Voce escolheu exibir todos os exercicios no banco de dados.");
+
+        JFrame frame = new JFrame("Lista de Exercícios");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+
+        DefaultTableModel tableModel = new DefaultTableModel();
+        JTable table = new JTable(tableModel);
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
+
         String sql = "SELECT * FROM exercicios";
-        try (Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(sql)) {
-            printResultSet(resultSet);
+        try (PreparedStatement statement = con.conectar().prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()) {
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            for (int i = 1; i <= columnCount; i++) {
+                tableModel.addColumn("<html><b>" + metaData.getColumnName(i) + "</b></html>");
+            }
+
+            while (resultSet.next()) {
+                Object[] rowData = new Object[columnCount];
+                for (int i = 1; i <= columnCount; i++) {
+                    rowData[i - 1] = resultSet.getString(i);
+                }
+                tableModel.addRow(rowData);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
+        frame.pack();
+        frame.setVisible(true);
     }
 
-    
 }
