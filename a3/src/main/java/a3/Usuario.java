@@ -193,6 +193,11 @@ public class Usuario {
         closeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
+                try {
+                    exibirInformacoesUsuario(connection);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         frame.add(closeButton);
@@ -201,7 +206,6 @@ public class Usuario {
 
         frame.setVisible(true);
     }
-
     private static String calcularTempoExercicio() {
         String sql = "SELECT * FROM exercicios WHERE exercicioID = ?";
         try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
