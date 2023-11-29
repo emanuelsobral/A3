@@ -6,7 +6,7 @@ import java.util.Scanner;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JOptionPane;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -199,7 +199,7 @@ public class Admin extends Usuario {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.dispose(); 
+                frame.dispose();
             }
         });
         frame.add(backButton);
@@ -213,7 +213,7 @@ public class Admin extends Usuario {
         System.out.println("Voce escolheu exibir todos os usuarios no banco de dados.");
 
         JFrame frame = new JFrame("Lista de Usuários");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
         DefaultTableModel tableModel = new DefaultTableModel();
@@ -332,51 +332,48 @@ public class Admin extends Usuario {
         }
     }
 
+    static void AlterarExercicioDoUsuario(Connection connection, Scanner sc) throws SQLException {
+        JFrame frame = new JFrame("Alterar Exercício do Usuário");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300, 200);
+        frame.setLayout(new FlowLayout());
 
+        JLabel userIdLabel = new JLabel("ID do Usuário:");
+        JTextField userIdField = new JTextField(10);
+        JLabel exercicioIdLabel = new JLabel("ID do Exercício:");
+        JTextField exercicioIdField = new JTextField(10);
+        JButton alterarButton = new JButton("Alterar");
 
-        static void AlterarExercicioDoUsuario(Connection connection, Scanner sc) throws SQLException {
-            JFrame frame = new JFrame("Alterar Exercício do Usuário");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(300, 200);
-            frame.setLayout(new FlowLayout());
+        alterarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = Integer.parseInt(userIdField.getText());
+                int exercicioID = Integer.parseInt(exercicioIdField.getText());
 
-            JLabel userIdLabel = new JLabel("ID do Usuário:");
-            JTextField userIdField = new JTextField(10);
-            JLabel exercicioIdLabel = new JLabel("ID do Exercício:");
-            JTextField exercicioIdField = new JTextField(10);
-            JButton alterarButton = new JButton("Alterar");
-
-            alterarButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    int id = Integer.parseInt(userIdField.getText());
-                    int exercicioID = Integer.parseInt(exercicioIdField.getText());
-
-                    String sql = "UPDATE usuario SET exercicioID = ? WHERE userID = ?";
-                    try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
-                        statement.setInt(1, exercicioID);
-                        statement.setInt(2, id);
-                        int linhasAfetadas = statement.executeUpdate();
-                        if (linhasAfetadas > 0) {
-                            JOptionPane.showMessageDialog(frame, "Exercício adicionado com sucesso.");
-                        } else {
-                            JOptionPane.showMessageDialog(frame, "Erro ao adicionar exercício.");
-                        }
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
+                String sql = "UPDATE usuario SET exercicioID = ? WHERE userID = ?";
+                try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
+                    statement.setInt(1, exercicioID);
+                    statement.setInt(2, id);
+                    int linhasAfetadas = statement.executeUpdate();
+                    if (linhasAfetadas > 0) {
+                        JOptionPane.showMessageDialog(frame, "Exercício adicionado com sucesso.");
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Erro ao adicionar exercício.");
                     }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
                 }
-            });
+            }
+        });
 
-            frame.add(userIdLabel);
-            frame.add(userIdField);
-            frame.add(exercicioIdLabel);
-            frame.add(exercicioIdField);
-            frame.add(alterarButton);
+        frame.add(userIdLabel);
+        frame.add(userIdField);
+        frame.add(exercicioIdLabel);
+        frame.add(exercicioIdField);
+        frame.add(alterarButton);
 
-            frame.setVisible(true);
-        }
-
+        frame.setVisible(true);
+    }
 
     private static void alterarNome(Connection connection, Scanner sc, int id) throws SQLException {
         System.out.print("Digite o novo nome: ");
@@ -547,35 +544,80 @@ public class Admin extends Usuario {
 
     static void alterarExercicio(Connection connection, Scanner sc) throws SQLException {
         JFrame frame = new JFrame("Admin");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLayout(new FlowLayout());
+
+        String[] options = { "Cadastrar Exercicio", "Alterar Nome", "Alterar Intensidade", "Alterar MET" };
+        JComboBox<String> dropdown = new JComboBox<>(options);
+        dropdown.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedIndex = dropdown.getSelectedIndex();
+                try {
+                    switch (selectedIndex) {
+                        case 0:
+                            CadastraExercicio(connection, new Scanner(System.in));
+                            break;
+                        case 1:
+                            alterarNomeExercicio(connection, new Scanner(System.in), id);
+                            break;
+                        case 2:
+                            alterarIntensidade(connection, new Scanner(System.in), id);
+                            break;
+                        case 3:
+                            alterarMET(connection, new Scanner(System.in), id);
+                            break;
+                        default:
+                            System.out.println("Opcao invalida.");
+                            break;
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        frame.add(dropdown);
+        frame.setSize(400, 300);
+        frame.setVisible(true);
+    }
+
+    public static void CadastraExercicio(Connection connection, Scanner sc) throws SQLException {
+            JFrame frame = new JFrame("Cadastrar Exercicio");
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setLayout(new FlowLayout());
 
-            String[] options = {"Cadastrar Exercicio", "Alterar Nome", "Alterar Intensidade", "Alterar Fator de Intensidade", "Alterar MET"};
-            JComboBox<String> dropdown = new JComboBox<>(options);
-            dropdown.addActionListener(new ActionListener() {
+            JLabel nameLabel = new JLabel("Nome do exercicio:");
+            JTextField nameField = new JTextField(20);
+
+            JLabel intensityLabel = new JLabel("Intensidade do exercicio (1 a 5):");
+            String[] intensityOptions = { "1 - Fácil", "2 - Iniciante", "3 - Moderado", "4 - Avançado", "5 - Difícil" };
+            JComboBox<String> intensityField = new JComboBox<>(intensityOptions);
+
+            JLabel metLabel = new JLabel("MET do exercicio:");
+            JTextField metField = new JTextField(20);
+
+            JButton cadastrarButton = new JButton("Cadastrar");
+            cadastrarButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    int selectedIndex = dropdown.getSelectedIndex();
-                    try {
-                        switch (selectedIndex) {
-                            case 0:
-                                CadastraExercicio(connection, new Scanner(System.in));
-                                break;
-                            case 1:
-                                alterarNomeExercicio(connection, new Scanner(System.in), id);
-                                break;
-                            case 2:
-                                alterarIntensidade(connection, new Scanner(System.in), id);
-                                break;
-                            case 3:
-                                alterarFatorIntensidade(connection, new Scanner(System.in), id);
-                                break;
-                            case 4:
-                                alterarMET(connection, new Scanner(System.in), id);
-                                break;
-                            default:
-                                System.out.println("Opcao invalida.");
-                                break;
+                    String exercicio = nameField.getText();
+                    String intensidade = intensityField.getSelectedItem().toString(); // Fix: Use getSelectedItem() instead of getText()
+
+                    float MET = Float.parseFloat(metField.getText());
+
+                    String sql = "INSERT INTO exercicios (exercicio, intensidade, fatorIntensidade, MET) VALUES (?, ?, ?, ?)";
+
+                    try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
+                        statement.setString(1, exercicio);
+                        statement.setString(2, intensidade.split(" - ")[1]); 
+                        statement.setInt(3, Integer.parseInt(intensidade.split(" - ")[0]));
+                        statement.setFloat(4, MET);
+                        int linhasAfetadas = statement.executeUpdate();
+                        if (linhasAfetadas > 0) {
+                            JOptionPane.showMessageDialog(frame, "Cadastro realizado com sucesso.");
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Erro ao realizar cadastro.");
                         }
                     } catch (SQLException ex) {
                         ex.printStackTrace();
@@ -583,117 +625,169 @@ public class Admin extends Usuario {
                 }
             });
 
-            frame.add(dropdown);
-            frame.pack();
+            frame.add(nameLabel);
+            frame.add(nameField);
+            frame.add(intensityLabel);
+            frame.add(intensityField);
+            frame.add(metLabel);
+            frame.add(metField);
+            frame.add(cadastrarButton);
+
+            frame.setSize(400, 300);
             frame.setVisible(true);
         }
 
-    private static void CadastraExercicio(Connection connection, Scanner sc) throws SQLException {
-        System.out.print("Digite o nome do exercicio: ");
-        String exercicio = sc.nextLine();
-        System.out.print("Digite a intensidade do exercicio: ");
-        String intensidade = sc.nextLine();
-        System.out.print("Digite o fator de intensidade do exercicio: ");
-        int fatorIntensidade = sc.nextInt();
-        System.out.print("Digite o MET do exercicio: ");
-        float MET = sc.nextFloat();
-        String sql = "INSERT INTO exercicios (exercicio, intensidade, fatorIntensidade, MET) VALUES (?, ?, ?, ?)";
-
-        try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
-            statement.setString(1, exercicio);
-            statement.setString(2, intensidade);
-            statement.setInt(3, fatorIntensidade);
-            statement.setFloat(4, MET);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Cadastro realizado com sucesso.");
-            } else {
-                System.out.println("Erro ao realizar cadastro.");
-            }
-        }
-    }
-
     private static void alterarMET(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite o id do exercicio que voce quer alterar: ");
-        id = sc.nextInt();
-        System.out.print("Digite o novo MET: ");
-        float novoMET = sc.nextFloat();
-        String sql = "UPDATE exercicios SET MET = ? WHERE exercicioID = ?";
+        JFrame frame = new JFrame("Alterar MET");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
-            statement.setFloat(1, novoMET);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("MET alterado com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar MET.");
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(3, 2));
+
+        JLabel idLabel = new JLabel("ID do exercicio:");
+        JTextField idField = new JTextField();
+        JLabel metLabel = new JLabel("Novo MET:");
+        JTextField metField = new JTextField();
+
+        JButton alterarButton = new JButton("Alterar");
+        alterarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int finalId = Integer.parseInt(idField.getText());
+                    float novoMET = Float.parseFloat(metField.getText());
+                    String sql = "UPDATE exercicios SET MET = ? WHERE exercicioID = ?";
+                    try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
+                        statement.setFloat(1, novoMET);
+                        statement.setInt(2, finalId);
+                        int linhasAfetadas = statement.executeUpdate();
+                        if (linhasAfetadas > 0) {
+                            JOptionPane.showMessageDialog(null, "MET alterado com sucesso.");
+                            frame.dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Erro ao alterar MET.");
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                } catch (NumberFormatException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "ID inválido ou MET inválido.");
+                }
             }
-        }
-    }
+        });
 
-    private static void alterarFatorIntensidade(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite o id do exercicio que voce quer alterar: ");
-        id = sc.nextInt();
-        System.out.print("Digite o novo fator de intensidade (1 a 5): ");
-        int novoFatorIntensidade = sc.nextInt();
-        String sql = "UPDATE exercicios SET fatorIntensidade = ? WHERE exercicioID = ?";
+        panel.add(idLabel);
+        panel.add(idField);
+        panel.add(metLabel);
+        panel.add(metField);
+        panel.add(new JLabel());
+        panel.add(alterarButton);
 
-        try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
-            statement.setInt(1, novoFatorIntensidade);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Fator de intensidade alterado com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar fator de intensidade.");
-            }
-        }
+        frame.getContentPane().add(panel);
+        frame.pack();
+        frame.setVisible(true);
     }
 
     private static void alterarIntensidade(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite o id do exercicio que voce quer alterar: ");
-        id = sc.nextInt();
-        System.out.print("Digite a nova intensidade: ");
-        String novaIntensidade = sc.nextLine();
-        String sql = "UPDATE exercicios SET intensidade = ? WHERE exercicioID = ?";
+        JFrame frame = new JFrame("Alterar Intensidade");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
-            statement.setString(1, novaIntensidade);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Intensidade alterada com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar intensidade.");
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(2, 2));
+
+        JLabel idLabel = new JLabel("ID do exercicio:");
+        JTextField idField = new JTextField();
+        JLabel intensidadeLabel = new JLabel("Nova intensidade:");
+        String[] intensidadeOptions = { "1 - Fácil", "2 - Iniciante", "3 - Moderado", "4 - Avançado", "5 - Difícil" };
+        JComboBox<String> intensidadeField = new JComboBox<>(intensidadeOptions);
+
+        panel.add(idLabel);
+        panel.add(idField);
+        panel.add(intensidadeLabel);
+        panel.add(intensidadeField);
+
+        int result = JOptionPane.showConfirmDialog(null, panel, "Alterar Intensidade", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            id = Integer.parseInt(idField.getText());
+            String novaIntensidade = (String) intensidadeField.getSelectedItem();
+            String sql = "UPDATE exercicios SET intensidade = ?, fatorIntensidade = ? WHERE exercicioID = ?";
+
+            try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
+                statement.setString(1, novaIntensidade.split(" - ")[1]);
+                statement.setInt(2, Integer.parseInt(novaIntensidade.split(" - ")[0]));
+                statement.setInt(3, id);
+                int linhasAfetadas = statement.executeUpdate();
+                if (linhasAfetadas > 0) {
+                    JOptionPane.showMessageDialog(null, "Intensidade alterada com sucesso.");
+                    frame.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Erro ao alterar intensidade.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
+
+        frame.pack();
+        frame.setVisible(true);
     }
 
-    private static void alterarNomeExercicio(Connection connection, Scanner sc, int id) throws SQLException {
-        System.out.print("Digite o id do exercicio que voce quer alterar: ");
-        id = sc.nextInt();
-        System.out.print("Digite o novo nome do exercicio: ");
-        String novoNomeExercicio = sc.nextLine();
-        String sql = "UPDATE exercicios SET exercicio = ? WHERE exercicioID = ?";
 
-        try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
-            statement.setString(1, novoNomeExercicio);
-            statement.setInt(2, id);
-            int linhasAfetadas = statement.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Nome do exercicio alterado com sucesso.");
-            } else {
-                System.out.println("Erro ao alterar nome do exercicio.");
+    private static void alterarNomeExercicio(Connection connection, Scanner sc, int id) throws SQLException {
+        JFrame frame = new JFrame("Alterar Nome do Exercício");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(2, 2));
+
+        JLabel idLabel = new JLabel("ID do exercício:");
+        JTextField idField = new JTextField();
+        JLabel nomeLabel = new JLabel("Novo nome do exercício:");
+        JTextField nomeField = new JTextField();
+
+        panel.add(idLabel);
+        panel.add(idField);
+        panel.add(nomeLabel);
+        panel.add(nomeField);
+
+        JButton button = new JButton("Alterar");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = Integer.parseInt(idField.getText());
+                String novoNomeExercicio = nomeField.getText();
+                String sql = "UPDATE exercicios SET exercicio = ? WHERE exercicioID = ?";
+
+                try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
+                    statement.setString(1, novoNomeExercicio);
+                    statement.setInt(2, id);
+                    int linhasAfetadas = statement.executeUpdate();
+                    if (linhasAfetadas > 0) {
+                        JOptionPane.showMessageDialog(null, "Nome do exercício alterado com sucesso.");
+                        frame.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Erro ao alterar nome do exercício.");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
-        }
+        });
+
+        frame.add(panel, BorderLayout.CENTER);
+        frame.add(button, BorderLayout.SOUTH);
+
+        frame.pack();
+        frame.setVisible(true);
     }
 
     public static void mostratTodosExercicios(Connection connection) throws SQLException {
         System.out.println("Voce escolheu exibir todos os exercicios no banco de dados.");
 
         JFrame frame = new JFrame("Lista de Exercícios");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
         DefaultTableModel tableModel = new DefaultTableModel();
