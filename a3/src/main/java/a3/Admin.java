@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
-
 public class Admin extends Usuario {
 
     static Conexao con = new Conexao("root", "RootAdmin123");
@@ -23,10 +22,8 @@ public class Admin extends Usuario {
     }
 
     public static void showAdminOptions(Connection connection) {
-        String[] adminOptions = { "Exibir Todos os Usuarios", "Deletar Usuario", "Alterar Usuario",
-                "Cadastrar Usuario ou Cadastrar Admin",
-                "Alterar Exercicio ou Cadastrar Exercicio", "Alterar Exercicio do Usuario",
-                "Mostrar Todos os Exercicios" };
+        String[] adminOptions = { "Exibir Todos os Usuarios","Mostrar Todos os Exercicios", "Alterar Usuario", "Alterar ou Cadastrar Exercicio", 
+                                  "Cadastrar Usuario ou Admin", "Deletar Usuario", "Alterar Exercicio do Usuario"};
 
         JFrame frame = new JFrame("FitWeek : ADMIN");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -56,9 +53,9 @@ public class Admin extends Usuario {
                                 e1.printStackTrace();
                             }
                             break;
-                        case "Deletar Usuario":
+                        case "Mostrar Todos os Exercicios":
                             try {
-                                Admin.deletarUsuario(connection, new Scanner(System.in));
+                                Admin.mostratTodosExercicios(connection);
                             } catch (SQLException e1) {
                                 e1.printStackTrace();
                             }
@@ -70,16 +67,24 @@ public class Admin extends Usuario {
                                 e1.printStackTrace();
                             }
                             break;
-                        case "Cadastrar Usuario ou Cadastrar Admin":
+                        case "Cadastrar Usuario ou Admin":
                             Admin.cadastrarAdmin(connection);
                             break;
-                        case "Alterar Exercicio ou Cadastrar Exercicio":
+                        case "Alterar ou Cadastrar Exercicio":
                             try {
                                 Admin.alterarExercicio(connection, new Scanner(System.in));
                             } catch (SQLException e1) {
                                 e1.printStackTrace();
                             }
                             break;
+                        case "Deletar Usuario":
+                            try {
+                                Admin.deletarUsuario(connection, new Scanner(System.in));
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                            break;
+
                         case "Alterar Exercicio do Usuario":
                             try {
                                 Admin.AlterarExercicioDoUsuario(connection, new Scanner(System.in));
@@ -87,13 +92,7 @@ public class Admin extends Usuario {
                                 e1.printStackTrace();
                             }
                             break;
-                        case "Mostrar Todos os Exercicios":
-                            try {
-                                Admin.mostratTodosExercicios(connection);
-                            } catch (SQLException e1) {
-                                e1.printStackTrace();
-                            }
-                            break;
+
                         default:
                             JOptionPane.showMessageDialog(null, "Opcao invalida.");
                             break;
@@ -583,59 +582,60 @@ public class Admin extends Usuario {
     }
 
     public static void CadastraExercicio(Connection connection, Scanner sc) throws SQLException {
-            JFrame frame = new JFrame("Cadastrar Exercicio");
-            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.setLayout(new FlowLayout());
+        JFrame frame = new JFrame("Cadastrar Exercicio");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLayout(new FlowLayout());
 
-            JLabel nameLabel = new JLabel("Nome do exercicio:");
-            JTextField nameField = new JTextField(20);
+        JLabel nameLabel = new JLabel("Nome do exercicio:");
+        JTextField nameField = new JTextField(20);
 
-            JLabel intensityLabel = new JLabel("Intensidade do exercicio (1 a 5):");
-            String[] intensityOptions = { "1 - Fácil", "2 - Iniciante", "3 - Moderado", "4 - Avançado", "5 - Difícil" };
-            JComboBox<String> intensityField = new JComboBox<>(intensityOptions);
+        JLabel intensityLabel = new JLabel("Intensidade do exercicio (1 a 5):");
+        String[] intensityOptions = { "1 - Fácil", "2 - Iniciante", "3 - Moderado", "4 - Avançado", "5 - Difícil" };
+        JComboBox<String> intensityField = new JComboBox<>(intensityOptions);
 
-            JLabel metLabel = new JLabel("MET do exercicio:");
-            JTextField metField = new JTextField(20);
+        JLabel metLabel = new JLabel("MET do exercicio:");
+        JTextField metField = new JTextField(20);
 
-            JButton cadastrarButton = new JButton("Cadastrar");
-            cadastrarButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    String exercicio = nameField.getText();
-                    String intensidade = intensityField.getSelectedItem().toString(); // Fix: Use getSelectedItem() instead of getText()
+        JButton cadastrarButton = new JButton("Cadastrar");
+        cadastrarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String exercicio = nameField.getText();
+                String intensidade = intensityField.getSelectedItem().toString(); // Fix: Use getSelectedItem() instead
+                                                                                  // of getText()
 
-                    float MET = Float.parseFloat(metField.getText());
+                float MET = Float.parseFloat(metField.getText());
 
-                    String sql = "INSERT INTO exercicios (exercicio, intensidade, fatorIntensidade, MET) VALUES (?, ?, ?, ?)";
+                String sql = "INSERT INTO exercicios (exercicio, intensidade, fatorIntensidade, MET) VALUES (?, ?, ?, ?)";
 
-                    try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
-                        statement.setString(1, exercicio);
-                        statement.setString(2, intensidade.split(" - ")[1]); 
-                        statement.setInt(3, Integer.parseInt(intensidade.split(" - ")[0]));
-                        statement.setFloat(4, MET);
-                        int linhasAfetadas = statement.executeUpdate();
-                        if (linhasAfetadas > 0) {
-                            JOptionPane.showMessageDialog(frame, "Cadastro realizado com sucesso.");
-                        } else {
-                            JOptionPane.showMessageDialog(frame, "Erro ao realizar cadastro.");
-                        }
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
+                try (PreparedStatement statement = con.conectar().prepareStatement(sql)) {
+                    statement.setString(1, exercicio);
+                    statement.setString(2, intensidade.split(" - ")[1]);
+                    statement.setInt(3, Integer.parseInt(intensidade.split(" - ")[0]));
+                    statement.setFloat(4, MET);
+                    int linhasAfetadas = statement.executeUpdate();
+                    if (linhasAfetadas > 0) {
+                        JOptionPane.showMessageDialog(frame, "Cadastro realizado com sucesso.");
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Erro ao realizar cadastro.");
                     }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
                 }
-            });
+            }
+        });
 
-            frame.add(nameLabel);
-            frame.add(nameField);
-            frame.add(intensityLabel);
-            frame.add(intensityField);
-            frame.add(metLabel);
-            frame.add(metField);
-            frame.add(cadastrarButton);
+        frame.add(nameLabel);
+        frame.add(nameField);
+        frame.add(intensityLabel);
+        frame.add(intensityField);
+        frame.add(metLabel);
+        frame.add(metField);
+        frame.add(cadastrarButton);
 
-            frame.setSize(400, 300);
-            frame.setVisible(true);
-        }
+        frame.setSize(400, 300);
+        frame.setVisible(true);
+    }
 
     private static void alterarMET(Connection connection, Scanner sc, int id) throws SQLException {
         JFrame frame = new JFrame("Alterar MET");
@@ -732,7 +732,6 @@ public class Admin extends Usuario {
         frame.pack();
         frame.setVisible(true);
     }
-
 
     private static void alterarNomeExercicio(Connection connection, Scanner sc, int id) throws SQLException {
         JFrame frame = new JFrame("Alterar Nome do Exercício");
