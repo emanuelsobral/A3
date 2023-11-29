@@ -103,6 +103,9 @@ public class Admin extends Usuario {
 
         frame.setSize(400, 300);
         frame.setVisible(true);
+
+        frame.setLocationRelativeTo(null);
+
     }
 
     public static void cadastrarAdmin(Connection connection) {
@@ -206,6 +209,9 @@ public class Admin extends Usuario {
 
         frame.pack();
         frame.setVisible(true);
+
+        frame.setLocationRelativeTo(null);
+
     }
 
     public static void exibirTodosUsuarios(Connection connection) throws SQLException {
@@ -241,6 +247,9 @@ public class Admin extends Usuario {
 
         frame.setSize(1200, 600);
         frame.setVisible(true);
+
+        frame.setLocationRelativeTo(null);
+
     }
 
     public static void deletarUsuario(Connection connection, Scanner sc) throws SQLException {
@@ -587,6 +596,9 @@ public class Admin extends Usuario {
         frame.add(dropdown);
         frame.setSize(400, 100);
         frame.setVisible(true);
+
+        frame.setLocationRelativeTo(null);
+
     }
 
     public static void CadastraExercicio(Connection connection, Scanner sc) throws SQLException {
@@ -643,6 +655,9 @@ public class Admin extends Usuario {
 
         frame.setSize(400, 300);
         frame.setVisible(true);
+
+        frame.setLocationRelativeTo(null);
+
     }
 
     private static void alterarMET(Connection connection, Scanner sc, int id) throws SQLException {
@@ -695,6 +710,9 @@ public class Admin extends Usuario {
         frame.getContentPane().add(panel);
         frame.pack();
         frame.setVisible(true);
+
+        frame.setLocationRelativeTo(null);
+
     }
 
     private static void alterarIntensidade(Connection connection, Scanner sc, int id) throws SQLException {
@@ -739,6 +757,9 @@ public class Admin extends Usuario {
 
         frame.pack();
         frame.setVisible(true);
+
+        frame.setLocationRelativeTo(null);
+
     }
 
     private static void alterarNomeExercicio(Connection connection, Scanner sc, int id) throws SQLException {
@@ -788,6 +809,9 @@ public class Admin extends Usuario {
 
         frame.pack();
         frame.setVisible(true);
+
+        frame.setLocationRelativeTo(null);
+
     }
 
     public static void mostratTodosExercicios(Connection connection) throws SQLException {
@@ -825,6 +849,9 @@ public class Admin extends Usuario {
 
         frame.pack();
         frame.setVisible(true);
+
+        frame.setLocationRelativeTo(null);
+
     }
 
 }
