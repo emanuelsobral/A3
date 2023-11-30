@@ -68,7 +68,7 @@ public class Usuario {
         public UserInterface(Connection connection) {
             setTitle("FitWeek");
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            setSize(400, 300);
+            setSize(400, 600);
             setLayout(new BorderLayout());
 
             setLocationRelativeTo(null);

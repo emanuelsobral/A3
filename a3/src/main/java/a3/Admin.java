@@ -100,7 +100,7 @@ public class Admin extends Usuario {
             });
         }
 
-        frame.setSize(400, 300);
+        frame.setSize(400, 600);
         frame.setVisible(true);
 
         frame.setLocationRelativeTo(null);
@@ -278,110 +278,114 @@ public class Admin extends Usuario {
     }
 
     public static void alterarUsuario(Connection connection, Scanner sc) throws SQLException {
-            JFrame frame = new JFrame("Alterar Usuário");
-            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.setSize(400, 300);
-            frame.setLayout(new BorderLayout());
+        JFrame frame = new JFrame("Alterar Usuário");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(400, 500);
+        frame.setLayout(new BorderLayout());
 
-            JPanel panel = new JPanel();
-            panel.setLayout(new GridLayout(2, 2));
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(6, 2));
 
-            JLabel userIdLabel = new JLabel("ID do Usuário:");
-            JTextField userIdField = new JTextField(10);
-            JLabel opcaoLabel = new JLabel("Opção:");
-            JComboBox<String> opcaoComboBox = new JComboBox<>(new String[]{"Nome", "Email", "Senha", "Altura", "Idade", "Peso", "Frequência", "Gênero", "Admin"});
-            JButton alterarButton = new JButton("Alterar");
+        JLabel userIdLabel = new JLabel("ID do Usuário:");
+        JTextField userIdField = new JTextField(10);
+        JLabel emptyLabel3 = new JLabel("");
+        JLabel emptyLabel4 = new JLabel("");
+        JLabel opcaoLabel = new JLabel("Opção:");
+        JComboBox<String> opcaoComboBox = new JComboBox<>(new String[]{"Nome", "Email", "Senha", "Altura", "Idade", "Peso", "Frequência", "Gênero", "Admin"});
+        JButton alterarButton = new JButton("Alterar");
 
-            alterarButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    int id = Integer.parseInt(userIdField.getText());
-                    String opcao = (String) opcaoComboBox.getSelectedItem();
+        alterarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = Integer.parseInt(userIdField.getText());
+                String opcao = (String) opcaoComboBox.getSelectedItem();
 
-                    // Perform the desired action based on the selected option
-                    switch (opcao) {
-                        case "Nome":
-                            try {
-                                alterarNome(connection, sc, id);
-                            } catch (SQLException ex) {
-                                ex.printStackTrace();
-                            }
-                            break;
-                        case "Email":
-                            try {
-                                alterarEmail(connection, sc, id);
-                            } catch (SQLException ex) {
-                                ex.printStackTrace();
-                            }
-                            break;
-                        case "Senha":
-                            try {
-                                alterarSenha(connection, sc, id);
-                            } catch (SQLException ex) {
-                                ex.printStackTrace();
-                            }
-                            break;
-                        case "Altura":
-                            try {
-                                alterarAltura(connection, sc, id);
-                            } catch (SQLException ex) {
-                                ex.printStackTrace();
-                            }
-                            break;
-                        case "Idade":
-                            try {
-                                alterarIdade(connection, sc, id);
-                            } catch (SQLException ex) {
-                                ex.printStackTrace();
-                            }
-                            break;
-                        case "Peso":
-                            try {
-                                alterarPeso(connection, sc, id);
-                            } catch (SQLException ex) {
-                                ex.printStackTrace();
-                            }
-                            break;
-                        case "Frequência":
-                            try {
-                                alterarFrequencia(connection, sc, id);
-                            } catch (SQLException ex) {
-                                ex.printStackTrace();
-                            }
-                            break;
-                        case "Gênero":
-                            try {
-                                alterarGenero(connection, sc, id);
-                            } catch (SQLException ex) {
-                                ex.printStackTrace();
-                            }
-                            break;
-                        case "Admin":
-                            try {
-                                alterarAdmin(connection, sc, id);
-                            } catch (SQLException ex) {
-                                ex.printStackTrace();
-                            }
-                            break;
-                        default:
-                            System.out.println("Opção inválida.");
-                            break;
-                    }
+                // Perform the desired action based on the selected option
+                switch (opcao) {
+                    case "Nome":
+                        try {
+                            alterarNome(connection, sc, id);
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                        break;
+                    case "Email":
+                        try {
+                            alterarEmail(connection, sc, id);
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                        break;
+                    case "Senha":
+                        try {
+                            alterarSenha(connection, sc, id);
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                        break;
+                    case "Altura":
+                        try {
+                            alterarAltura(connection, sc, id);
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                        break;
+                    case "Idade":
+                        try {
+                            alterarIdade(connection, sc, id);
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                        break;
+                    case "Peso":
+                        try {
+                            alterarPeso(connection, sc, id);
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                        break;
+                    case "Frequência":
+                        try {
+                            alterarFrequencia(connection, sc, id);
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                        break;
+                    case "Gênero":
+                        try {
+                            alterarGenero(connection, sc, id);
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                        break;
+                    case "Admin":
+                        try {
+                            alterarAdmin(connection, sc, id);
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                        break;
+                    default:
+                        System.out.println("Opção inválida.");
+                        break;
                 }
-            });
+            }
+        });
 
-            panel.add(userIdLabel);
-            panel.add(userIdField);
-            panel.add(opcaoLabel);
-            panel.add(opcaoComboBox);
+        panel.add(userIdLabel);
+        panel.add(userIdField);
+        panel.add(opcaoLabel);
+        panel.add(opcaoComboBox);
+        panel.add(emptyLabel3);
+        panel.add(emptyLabel4);
 
-            frame.add(panel, BorderLayout.CENTER);
-            frame.add(alterarButton, BorderLayout.SOUTH);
+        frame.add(panel, BorderLayout.CENTER);
+        frame.add(alterarButton, BorderLayout.SOUTH);
 
-            frame.setLocationRelativeTo(null);
+        frame.setLocationRelativeTo(null);
 
-            frame.setVisible(true);
-        }
+        frame.setVisible(true);
+    }
 
     static void AlterarExercicioDoUsuario(Connection connection, Scanner sc) throws SQLException {
         JFrame frame = new JFrame("Alterar Exercício do Usuário");

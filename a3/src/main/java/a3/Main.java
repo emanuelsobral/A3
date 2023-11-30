@@ -20,7 +20,7 @@ public class Main {
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
 
-        JPanel panel = new JPanel(new GridLayout(10, 2));
+        JPanel panel = new JPanel(new GridLayout(9, 1));
 
         JLabel tituloLabel = new JLabel("FitWeek");
         tituloLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -28,10 +28,11 @@ public class Main {
         tituloLabel.setForeground(new Color(128, 0, 128)); 
 
         JLabel emptyLabel2 = new JLabel(); 
-        JLabel emptyLabel3 = new JLabel(); 
 
         JLabel emailLabel = new JLabel("Email:");
+        emailLabel.setHorizontalAlignment(JLabel.CENTER);
         JLabel senhaLabel = new JLabel("Senha:");
+        senhaLabel.setHorizontalAlignment(JLabel.CENTER);
 
         JTextField emailField = new JTextField(20);
         JPasswordField senhaField = new JPasswordField(20);
@@ -43,7 +44,6 @@ public class Main {
 
         panel.add(tituloLabel);
         panel.add(emptyLabel2); 
-        panel.add(emptyLabel3); 
         panel.add(emailLabel);
         panel.add(emailField);
         panel.add(senhaLabel);
