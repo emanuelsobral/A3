@@ -16,16 +16,19 @@ public class Main {
 
         JFrame frame = new JFrame("Login");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 200);
+        frame.setSize(400, 600);
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
 
-        JPanel panel = new JPanel(new GridLayout(4, 2));
+        JPanel panel = new JPanel(new GridLayout(10, 2));
 
         JLabel tituloLabel = new JLabel("FitWeek");
         tituloLabel.setHorizontalAlignment(JLabel.CENTER);
         tituloLabel.setFont(new Font("Arial", Font.BOLD, 24));
         tituloLabel.setForeground(new Color(128, 0, 128)); 
+
+        JLabel emptyLabel2 = new JLabel(); 
+        JLabel emptyLabel3 = new JLabel(); 
 
         JLabel emailLabel = new JLabel("Email:");
         JLabel senhaLabel = new JLabel("Senha:");
@@ -33,15 +36,19 @@ public class Main {
         JTextField emailField = new JTextField(20);
         JPasswordField senhaField = new JPasswordField(20);
 
+        JLabel emptyLabel4 = new JLabel();
+
         JButton loginButton = new JButton("Login");
         JButton registerButton = new JButton("Se cadastrar");
 
         panel.add(tituloLabel);
-        panel.add(new JLabel());
+        panel.add(emptyLabel2); 
+        panel.add(emptyLabel3); 
         panel.add(emailLabel);
         panel.add(emailField);
         panel.add(senhaLabel);
         panel.add(senhaField);
+        panel.add(emptyLabel4);
         panel.add(loginButton);
         panel.add(registerButton);
 
